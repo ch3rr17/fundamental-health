@@ -1,0 +1,26 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+
+@theme {
+	/* fundamental.health palette */
+	--color-cream: #fffbf4;
+	--color-cream-soft: #f1ece3;
+	--color-cream-dim: #dcd4cb;
+
+	--color-ink: #333333;
+
+	--color-coral: #e33158;
+	--color-amber: #f39a3a;
+
+	--color-sky: #e9eff8;
+	--color-periwinkle: #7993c6;
+	--color-periwinkle-dark: #7783bf;
+
+	--color-navy: #0a3e60;
+}
+
+body {
+	background-color: var(--color-cream);
+	color: var(--color-ink);
+}
