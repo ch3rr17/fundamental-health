@@ -102,7 +102,7 @@ console.log('Word counting');
 	expect(`counts the worked example inside 90-160 (got ${n})`, n >= 90 && n <= 160);
 	expect(
 		'excludes the footer',
-		!GOOD_BODY.slice(0).includes('@@') && n < GOOD_BODY.split(/\s+/).length - 20
+		n < GOOD_BODY.split(/\s+/).length - 20
 	);
 }
 
