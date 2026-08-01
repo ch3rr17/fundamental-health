@@ -55,7 +55,7 @@ The agent should receive, at minimum:
 | `prior_contact`            | Optional           | Any existing relationship history. If present, read it before drafting.                                                  |
 | `sender`                   | Optional           | `{name, title}` of the person the email is from. Defaults to Myke Edelman, Interim CEO. Never invent a different sender. |
 
-If `first_name`, `company`, or `email` is missing, stop and return status
+If `first_name`, `last_name`, (`company` or `organization`), or `email` is missing, stop and return status
 `insufficient_input`. Do not guess.
 
 **Note on duplicates:** the app runs its own duplicate-contact check against Klaviyo and
