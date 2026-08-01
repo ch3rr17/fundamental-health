@@ -510,8 +510,8 @@ Automatic downgrade to `needs_human_review` regardless of score if:
 
 ## 9. Output Format
 
-Return a single JSON object per prospect, and nothing else. No prose before or after it, no
-markdown fence around it. Emit every key below; use `null` for fields that do not apply.
+Return a single JSON object per prospect, and nothing else. No prose before or after it.
+The JSON shape below is fenced for readability; do not include any markdown fences in your output. Emit every key below; use `null` for fields that do not apply.
 
 ```json
 {
