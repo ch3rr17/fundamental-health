@@ -534,7 +534,7 @@ The JSON shape below is fenced for readability; do not include any markdown fenc
 		]
 	},
 	"track": {
-		"selected": "<one of: 01, 02, 03, 04, 05>",
+		"selected": "<one of: 01, 02, 03, 04, 05, or null when no track is confident>",
 		"confidence": 0,
 		"rationale": "<one to two sentences on why this track and not the others>",
 		"runners_up": ["<track>", "<track>"]
