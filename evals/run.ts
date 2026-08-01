@@ -230,7 +230,7 @@ function renderReport(results: CaseResult[], opts: { research: boolean; judge: b
 async function main() {
 	const research = !flag('no-research');
 	const judge = !flag('no-judge');
-	const concurrency = Number(arg('concurrency', '3'));
+	const concurrency = Math.max(1, Number.parseInt(arg('concurrency', '3') ?? '3', 10) || 3);
 	const only = arg('case');
 
 	const setPath = fileURLToPath(new URL('./golden-set.json', import.meta.url));
