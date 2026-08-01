@@ -1,0 +1,185 @@
+﻿Overview
+These should be added as conversation context INSIDE of APOLLO, do not copy and paste the emails directly and send.
+
+FundaMental Health
+Apollo Talk Tracks
+Cold Outreach Messaging for Donor Prospecting
+5 Contextual Talk Tracks Designed for:
+* Community donors with mental health affinity
+* Nonprofit and marketing professionals (Neighbors in Need case study)
+* Potential board members
+* Financial institutions with CRA obligations
+* DAF advisors and giving circle organizers
+How to Use These Talk Tracks in Apollo
+Each talk track below is designed to be entered as a Context Block inside Apollo's AI email sequencing. Apollo will use the context to personalize subject lines, opening lines, and calls to action based on contact-level data (name, company, industry, location).
+Each track includes:
+* Target audience: who this track is built for
+* Hook: the opening angle Apollo can lead with
+* Body: the core context about our work and programs
+* CTA: the specific ask for this segment
+* Apollo Usage Note: list-building and variable insertion guidance
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Email Templates
+TRACK 01  |  COMMUNITY EMOTIONAL CONNECTION
+Neighbors in Need: The Community Story
+TARGET AUDIENCE
+San Diego residents with demonstrated philanthropic giving, mental health affinity, $100K+ income
+HOOK
+Mental health struggles don't happen in institutions. They happen next door.
+BODY
+In San Diego, 1 in 5 adults is living with a mental health condition. That's your neighbor, your coworker, the person you see at the farmers market on Saturday mornings. Many of them can't afford care. Many of them don't know where to turn.
+FundaMental Health is a San Diego nonprofit changing that. Through our Foundation of Care program, we cover the cost of therapy for neighbors who can't afford it: youth in crisis, veterans carrying invisible wounds, elders facing grief and isolation.
+We believe your zip code shouldn't determine whether you get the support you need. And we believe San Diegans who care about their community can help change that.
+CALL TO ACTION
+We'd love to share what this work looks like up close. Would you be open to a 20-minute conversation about what FundaMental Health is building in our city?
+APOLLO USAGE NOTE
+Use this track for lists filtered by: San Diego location, mental health cause affinity, philanthropic behavior signals. Apollo variable insertions: first name, employer/industry if available.
+	
+
+
+
+
+
+
+
+TRACK 02  |  CASE STUDY INTEREST
+Neighbors in Need: The Case Study
+TARGET AUDIENCE
+Marketing professionals, nonprofit strategists, foundation program officers, mission-driven business leaders
+HOOK
+We built a donor campaign around three fictional neighbors. It turned into something much bigger.
+BODY
+FundaMental Health recently developed Neighbors in Need, a donor storytelling campaign that introduced three composite personas drawn from the real people we serve: Alex, an 18-year-old navigating housing instability after coming out. Victor, a 42-year-old veteran carrying PTSD and pride in equal measure. Rosa, a 70-year-old Latina widow processing grief in a culture that doesn't have easy language for it.
+The campaign was designed to make invisible needs visible. We documented the entire process, from clinical review to illustration to donor activation, and turned it into a case study for other nonprofits.
+The result is available as a 1-page summary or a full-length case study with behind-the-scenes storytelling, creative process breakdowns, and campaign results.
+CALL TO ACTION
+I'd love to send you a copy. Which version would be more useful to you right now: the 1-pager or the full case study?
+APOLLO USAGE NOTE
+Use this track for: nonprofit leaders, foundation staff, marketing/communications professionals, social sector consultants. Frame as a peer-to-peer knowledge share, not a donation ask. Works well for warm list building.
+	
+
+
+
+
+
+TRACK 03  |  BOARD RECRUITMENT
+Leadership Opportunity: FundaMental Health Board
+TARGET AUDIENCE
+Senior professionals, attorneys, financial advisors, healthcare executives, civic leaders
+HOOK
+We're building a board that matches the ambition of our mission.
+BODY
+FundaMental Health is a San Diego behavioral health nonprofit at an inflection point. We operate two programs: Foundation of Care, which provides donation-funded therapy to underserved neighbors, and Bridge to Care, our Medi-Cal Enhanced Care Management model serving City Heights and surrounding communities.
+We're growing. And we're looking for leaders who want to shape what that growth looks like.
+Board membership at FundaMental Health is an active partnership. We're looking for people with expertise in areas like finance, law, healthcare, communications, fundraising, and community development. People who want to do more than attend quarterly meetings. People who believe access to mental health care is one of the defining equity issues of our time.
+If that resonates, we'd love to have a conversation about whether there's a fit.
+CALL TO ACTION
+Would you be open to a brief call to learn more about what board membership looks like at FundaMental Health? No commitment required.
+APOLLO USAGE NOTE
+Use this track for: senior professionals with nonprofit board history, attorneys/CPAs, healthcare executives, civic-minded business owners. Prioritize contacts with existing governance or advisory experience in LinkedIn/Apollo data.
+	
+
+TRACK 04  |  FINANCIAL INSTITUTIONS & CRA
+Community Investment Alignment: CRA and Behavioral Health
+TARGET AUDIENCE
+Community bank executives, credit union leaders, CRA officers, regional bank VP-level contacts
+HOOK
+Mental health access is a Community Reinvestment Act opportunity most banks haven't noticed yet.
+BODY
+Financial institutions under CRA obligations increasingly need to demonstrate investment in underserved communities, particularly in areas like health, housing stability, and workforce readiness. Mental health is at the intersection of all three.
+FundaMental Health operates two programs in San Diego: direct therapy access for low-income and unhoused individuals through Foundation of Care, and Enhanced Care Management for Medi-Cal patients in City Heights through Bridge to Care. Both programs serve populations and geographies that map directly to CRA assessment areas.
+We're actively seeking community investment partners who see behavioral healthcare not just as a charitable cause, but as a strategic alignment with their CRA goals and community impact commitments.
+CALL TO ACTION
+I'd welcome the chance to share how other financial institutions have structured partnerships with behavioral health nonprofits for CRA credit. Would a 20-minute call be worth your time?
+APOLLO USAGE NOTE
+Use this track for: CRA officers, community bank presidents/VPs, credit union executives in San Diego County. Reference City Heights geography specifically when Apollo data shows bank branches or assessment area overlap.
+	
+
+TRACK 05  |  DAF MANAGERS & GIVING CIRCLES
+Funding Mental Health Access: A Case for Giving Circles and DAF Advisors
+TARGET AUDIENCE
+Donor-advised fund advisors, giving circle organizers, women's philanthropy networks, community foundation program staff
+HOOK
+Behavioral health is one of the most underfunded causes relative to demonstrated community need.
+BODY
+For DAF holders and giving circle members looking to deploy capital with measurable impact, mental health access represents a compelling opportunity. Nationally, mental health receives just 7% of healthcare philanthropic dollars despite accounting for a disproportionate share of emergency room visits, homelessness, and workforce disruption.
+FundaMental Health offers a direct, transparent model. Donations to Foundation of Care cover the actual cost of therapy sessions for neighbors who cannot afford care. Bridge to Care extends our reach through the Medi-Cal system. We can show you exactly how dollars translate to sessions, and sessions translate to outcomes.
+We also offer giving circle programming: briefings, site visits, and impact reports designed to engage members who want to connect personally with the work they're funding.
+CALL TO ACTION
+If you're advising donors who care about health equity, or leading a giving circle looking for a high-impact local cause, I'd love to make a direct introduction to our team. Would that be a fit for anyone in your current portfolio?
+APOLLO USAGE NOTE
+Use this track for: Silicon Valley Community Foundation advisors, San Diego Foundation program staff, women's philanthropy networks (Women Give San Diego, etc.), religious-affiliated giving circles. Lead with the DAF angle if Apollo data includes 'philanthropic advisor' or 'wealth management' signals.
+	Links & Resources
+Reference materials for use in Apollo sequences, donor conversations, and follow-up outreach. Each entry includes a usage note to guide when and how to deploy the resource.
+STORYTELLING & CAMPAIGN CONTENT
+Neighbors in Need: Blog Post + Case Study Downloads
+https://fundamental.health/news/inside-neighbors-in-need-a-more-human-way-to-tell-impact-stories/
+Behind-the-scenes story of how we built our donor awareness campaign around three composite personas. Includes download links for both the 1-page and full case study versions. Best for: warm outreach to marketing professionals, nonprofit leaders, and foundation program officers.
+GIVING & DONATION
+Giving Page
+https://fundamental.health/donors/
+Direct donation page for Foundation of Care. Use as the primary CTA link in any email sequence where the contact has already expressed interest. Best for: follow-up sequences, re-engagement, and post-meeting outreach.
+PROGRAM PAGES
+Bridge to Care
+https://fundamental.health/bridge-to-care/
+Overview of our Medi-Cal Enhanced Care Management program serving City Heights and surrounding communities through Full Circle Health Network. Best for: CRA-focused financial institution outreach, healthcare executives, Medi-Cal-adjacent funders, and policy-minded donors.
+Foundation of Care
+https://fundamental.health/foundation-of-care/
+Overview of our donation-funded direct therapy access program for uninsured and underinsured San Diegans. Best for: individual donor sequences, giving circles, DAF advisors, and anyone responding to the community/emotional connection track.
+SUGGESTED ADDITIONAL RESOURCES
+The following are resources worth creating or surfacing if not already available, based on common donor due diligence needs:
+Annual Impact Report or Year-in-Review (PDF or landing page)
+Institutional donors, DAF advisors, and board prospects almost always want a data summary before committing. A one-pager showing sessions delivered, populations served, and program growth would significantly improve conversion on cold outreach. Recommend creating if not already available.
+Team / Leadership Page
+https://fundamental.health/about/
+Foundation officers and board prospects will vet the leadership team. Make sure this page is current and includes Myke and key staff. Best for: board recruitment sequences and major gift outreach where credibility matters.
+Press or Media Mentions (if available)
+Any San Diego Union-Tribune, Voice of San Diego, or local TV/radio coverage dramatically increases credibility for cold outreach to corporate and institutional prospects. A simple press page or PDF clippings doc is worth building.
+GuideStar / Candid Nonprofit Profile
+https://www.candid.org
+Many DAF platforms (Fidelity Charitable, Schwab, etc.) and foundation program officers check Candid/GuideStar before approving grants or recommending to donors. Ensure the profile is current and includes financials. A direct link to the FundaMental Health Candid page is worth adding to any institutional outreach.
+Employer Matching / Corporate Giving Info
+A short page or PDF explaining how corporate donors can match employee gifts through FundaMental Health would unlock a large audience of mid-level donors at companies with matching programs. Worth building as outreach to corporate giving contacts scales up.
+
+
+Email Segment Tracker
+
+
+Segment
+	
+
+Updates: Date, Initials, Note
+* Ex: 5/20, SA, Sent X emails
+	Community donors with mental health affinity: Amelia Motyka 
+	6/24, AM, Sent 
+	Nonprofit and marketing professionals (Neighbors in Need case study): Amelia Motyka
+	5/21, AM, Sent 1 email 
+5/27, AM, Sent 4 emails
+6/04, AM, Sent 2 emails
+6/20, AM, Sent 10 emails
+6/24, AM, Sent 4 emails
+	Potential board members: Sriya Amati
+	5/26, SA, Sent 3 emails
+	Financial institutions with CRA obligations: Sriya Amati 
+	5/27, SA, Sent 4 emails 
+	DAF advisors and giving circle organizers: Both
+	
+
+	
+
+LinkedIn Tracker

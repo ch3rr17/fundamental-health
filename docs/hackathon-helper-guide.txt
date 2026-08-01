@@ -1,0 +1,230 @@
+﻿FundaMental Health 101: A Guide for Our Hackathon Helpers
+Welcome, and thank you for jumping in. This doc is a fast on-ramp so you can go from "who is FundaMental Health" to fully useful teammate in about ten minutes. Content is pulled straight from fundamental.health and our internal materials, so it should stay reasonably current. Read top to bottom, or jump to what you need.
+
+
+________________
+
+
+The 30-Second Version
+FundaMental Health is a San Diego-based 501(c)(3) nonprofit on a mission to improve access to mental healthcare. We believe access to mental healthcare is a fundamental right, and we work to break down the financial and structural barriers that keep people from getting timely behavioral health support.
+
+
+We run two complementary care models: Foundation of Care (donation-funded direct therapy) and Bridge to Care (Medi-Cal Enhanced Care Management). Our flagship storytelling campaign, Neighbors in Need, uses three composite personas to help donors understand exactly who their gift supports. Today, we are here to explore how AI can push our mission further.
+
+
+Quick facts
+
+
+* Tax ID (EIN): 92-2728144
+* Address: 501 West Broadway, Suite 1540, San Diego, CA 92101
+* Phone: (619) 292-8072
+* Email: hello@fundamental.health
+* Website: fundamental.health
+* Founded: 2022, by Wyatt Hinshaw
+
+
+________________
+
+
+Who We Are
+We believe access to mental healthcare is a fundamental right, so we break down financial barriers and improve access to quality mental health services for all. FundaMental Health is a 501(c)(3) nonprofit offering both financial assistance and care coordination, driven by the belief that improving mental health enhances the lives and communities around us. We started in our hometown of San Diego, with plans to expand to Los Angeles and beyond as we grow.
+
+
+Founder Wyatt Hinshaw started the organization in 2022 after his own experience with the mental health system. He recognized that he was fortunate to have the money, support, and know-how to navigate care, and that mental illness does not discriminate even though access to quality care does. FundaMental Health currently supports participants from three core groups: youth, the LGBTQ+ community, and people experiencing homelessness, working through referral partners like EscoKidos, The Center (formerly The San Diego LGBT Community Center), and Solutions for Change so participants get real wraparound support.
+
+
+Our values
+
+
+* Inclusivity. Mental and behavioral illness does not discriminate, and neither do we. Our offerings are open to all who need support, regardless of age, gender, ethnicity, or sexual orientation.
+* Personalization. We customize care around each participant's unique journey and streamline funding, treatment placement, and care coordination.
+* Quality. Connecting people with high-quality care is critical to a successful mental and behavioral health journey.
+
+
+________________
+
+
+Our Two Models of Care
+1. Foundation of Care
+Foundation of Care increases access to quality mental health care by removing financial and structural barriers for people who might otherwise go without support. It works in three ways:
+
+
+* Fund. We eliminate cost barriers by providing financial aid so underserved individuals can access the mental health care they need.
+* Connect. We partner with trusted providers and match participants to professionals who best meet their needs.
+* Support. Personalized care coordination offers tailored guidance to help participants sustain their mental health journey.
+
+
+Who it serves: People in the Greater San Diego area facing financial hardship who fall into one of three populations: children/youth, LGBTQIA+, and people who are unhoused or housing-insecure. There is no income cap to apply; every application is reviewed case by case, with proof of financial hardship required.
+
+
+How it works: Applicants submit an online application (about 15 minutes) and complete a roughly one-hour phone interview. Once matched, participants receive a time-limited course of therapy, typically authorized in 10-week increments, often totaling 10 to 20 sessions. Providers include licensed psychiatrists, psychologists, LCSWs, LMFTs, and LPCCs. Throughout the process, our team also helps participants plan a path to longer-term, sustainable care after their authorized sessions end.
+2. Bridge to Care
+Bridge to Care is our Enhanced Care Management (ECM) program, a Medi-Cal benefit. We provide whole-person, trauma-informed care coordination for Medi-Cal members with complex medical, behavioral, and social needs, delivered through both in-person and virtual services.
+
+
+Seven core ECM services:
+
+
+1. Outreach and Engagement
+2. Comprehensive Assessment and Care Planning
+3. Enhanced Coordination of Care
+4. Health Promotion
+5. Comprehensive Transitional Care
+6. Member and Family Supports
+7. Referrals to Community and Social Services
+
+
+Who it serves: San Diego County residents enrolled in a participating Medi-Cal Managed Care Plan (currently Blue Shield Promise Health Plan, Molina Healthcare, and Kaiser Permanente) who meet criteria in a defined Population of Focus, for example: people experiencing homelessness, those at risk of avoidable hospital or ER use, people with serious mental health or substance use needs, adults at risk of long-term institutionalization, nursing facility residents transitioning to the community, or youth involved in child welfare or CCS.
+
+
+How it works: Anyone can submit a referral (self, family, provider, or community partner) through our online referral form. Once enrolled, a care manager builds a relationship with the individual, coordinates services across medical, mental health, and social systems, and supports them through transitions. Bridge to Care is not time-limited. There is no cost to eligible participants, and it does not replace therapy or medical treatment, it makes sure those services are connected and accessible.
+
+
+In one line, the difference: Foundation of Care funds and coordinates time-limited therapy. Bridge to Care coordinates ongoing, whole-person care navigation for people with more complex needs.
+
+
+________________
+
+
+Neighbors in Need: Our Storytelling Campaign
+The problem we were solving: Most of our donors historically came from a phone call or a coffee, a personal relationship. That does not scale. Donors knew their money "helped someone get care," but that help was abstract. We wanted to make it concrete.
+
+
+The idea: Instead of leaning on statistics alone, we created three composite personas, "neighbors," based on real, recurring patterns in the people we serve. They are not individual clients; they are carefully crafted composites that protect privacy while reflecting real experience.
+
+
+* Rosa, an older adult facing loneliness and loss
+* Alex, a young person searching for safety and belonging
+* Victor, a veteran working to rebuild stability
+
+
+Together, these stories form a spectrum of need across age, identity, and experience. They remind us that while mental health is universal, access is not.
+
+
+Why it matters: Cost, stigma, and lack of access keep millions from getting the therapy they need for anxiety, depression, trauma, and everyday stress. When people cannot access care, families struggle and communities suffer. Supporting neighbors like these means investing in stronger, healthier communities where care does not depend on income, background, or circumstance.
+
+
+By the numbers (live campaign stats):
+
+
+* 26+ people supported so far
+* $500,000 in funds raised
+* 100 unique donors
+* Average cost per therapy session: $125
+* Average cost for a 10-session treatment authorization: $1,250
+* Average cost for a full course of treatment (20 to 30 sessions): $3,150
+
+
+A portion of every donation also funds the operational and technology needs that keep FundaMental Health running.
+
+
+Explore it yourself:
+
+
+* Campaign home: fundamental.health/neighborsinneed
+* Rosa: fundamental.health/neighborsinneed/persona-rosa
+* Alex: fundamental.health/neighborsinneed/persona-alex
+* Victor: fundamental.health/neighborsinneed/persona-victor
+* Full case study (how we built it): Google Drive link
+* One-pager overview: Google Drive link
+
+
+This is a great model to riff on for hackathon ideas: anything that helps humanize impact, personalize donor journeys, or scale storytelling without scaling headcount is on-brand for us.
+
+
+________________
+
+
+Team Makeup
+We are a small, mostly part-time team supported by contractors, interns, and a board. Current org, pulled straight from our team page:
+
+
+Executive Team
+
+
+* Wyatt Hinshaw, Founder
+* Mychal (Myke) Edelman, Chief Executive Officer
+* Leigh-Ann Cardelfe, LCSW, Chief Clinical Officer
+
+
+Clinical Team
+
+
+* Sheever Ollero, Program Director, Foundation of Care
+* Michael Abad, Program Support Specialist, Foundation of Care
+* Debon McGill, PsyD, Program Director, Bridge to Care
+
+
+Marketing Team
+
+
+* Kait Comunale, Senior Director, Marketing and Creative
+* Colette Becker, Marketing Manager
+* Emily Yribarren, Marketing Associate
+* Rongli Geng, Social Media Intern
+* Amelia Motyka, Social Media and Business Development Intern
+
+
+Business Development Team
+
+
+* Adam Blejski, Business Development Consultant
+* Kate Juliane Marte, Associate Director, Development and Operations
+* Alvin Yagaya, Virtual Assistant
+* Sriya Amati, Business Development Intern
+
+
+Board of Directors
+
+
+* Wyatt Hinshaw, Founder
+* Mychal Edelman, CEO
+* Leigh-Ann Cardelfe, LCSW, Chief Clinical Officer
+* Adam Blejski, Operations Executive
+* Amy Gallego, Director of Client Services, Dunham & Associates
+
+
+Board of Advisors
+
+
+* Jeffrey Dunham, Chairman and CEO, Dunham & Associates
+* Nathan Wauthier, President and CEO, Nathan Wauthier Accounting, Inc.
+* Jamey Christensen, Fundraising Contractor, Sage Med
+* Shelby Woulfe, Grant Writer
+
+
+We are also currently onboarding a new Strategic Business Operations Associate.
+
+
+________________
+
+
+If You Want to Go Deeper
+* fundamental.health/who-we-are for full team bios and the founder's story
+* fundamental.health/faq for detailed program FAQs
+* fundamental.health/crisis-resources for crisis support info (this site is not for personal disclosure of suicidal thoughts; if someone is in crisis, call 988)
+* Neighbors in Need case study and one-pager (linked above)
+
+
+________________
+
+
+For the Hackathon
+Good jumping-off questions as you think about what to build with us:
+
+
+* How could AI make it easier for donors to see the human impact of their gift in real time?
+* How could AI help our small, part-time team do more outreach without more headcount (donor stewardship, grant research, storytelling)?
+* How could AI help Bridge to Care coordinators manage caseloads or navigate Medi-Cal systems more efficiently?
+* How could a "Neighbors in Need"-style approach be extended or automated for new personas, new campaigns, or new audiences?
+
+
+Welcome to the team for the next 24 hours. Ask questions, we are glad to have you.
+
+
+________________
+
+
+
+
+Sourced from fundamental.health (Who We Are, Foundation of Care, Bridge to Care, and Neighbors in Need pages) plus internal FundaMental Health materials. Last refreshed August 1, 2026.
