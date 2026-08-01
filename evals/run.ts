@@ -264,7 +264,8 @@ async function main() {
 
 	const report = renderReport(results, { research, judge });
 	const stamp = arg('out') ?? `evals/results/${process.env.EVAL_RUN_ID ?? 'latest'}`;
-	await mkdir(fileURLToPath(new URL('./results', import.meta.url)), { recursive: true });
+	const outDir = stamp.includes('/') ? stamp.slice(0, stamp.lastIndexOf('/')) : '.';
+	await mkdir(outDir, { recursive: true });
 	await writeFile(`${stamp}.md`, report, 'utf8');
 	await writeFile(`${stamp}.json`, JSON.stringify(results, null, 2), 'utf8');
 
