@@ -213,7 +213,7 @@ Evaluate in order. Select the first matching track. Never blend two tracks in on
 and above, partner, principal, C-suite, managing director) and shows at least one governance
 signal: prior nonprofit board service, advisory roles, attorney, CPA, healthcare executive,
 or civic leadership. San Diego geography is strongly preferred but not required if the
-connection is otherwise strong. Do not select this track for anyone below director level or
+connection is otherwise strong. Do not select this track for anyone below VP level or
 without a governance signal.
 
 **Track 04: Financial Institutions and CRA.** Select if the prospect works at a bank, credit
