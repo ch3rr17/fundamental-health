@@ -20,3 +20,16 @@ See [docs/](docs/) for project documentation:
 - [docs/grants/](docs/grants/) — Grant Scoping Tool PRD (separate track).
 - [docs/hackathon-helper-guide.txt](docs/hackathon-helper-guide.txt) — quick
   orientation to FundaMental Health for hackathon teammates.
+
+## Agent prompts
+
+Prompts that get sent to a model at runtime live under
+`src/lib/server/agent/prompts/`, not in `docs/`. They are code inputs, not
+documentation: editing one changes production behavior, and `$lib/server`
+keeps them out of the client bundle. Load them with Vite's `?raw` import.
+
+- [src/lib/server/agent/prompts/prospect-email-agent.md](src/lib/server/agent/prompts/prospect-email-agent.md)
+  — system prompt for the research + draft step of the AI Donor Outreach
+  Agent. Its Sections 3 (approved facts/links), 5.4 (track → talk-track
+  segment mapping) and 9 (output JSON) are structural: the app depends on
+  them, so changes there are code changes, not copy edits.
