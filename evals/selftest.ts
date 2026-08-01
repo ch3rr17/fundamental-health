@@ -100,9 +100,17 @@ console.log('Word counting');
 {
 	const n = countBodyWords(GOOD_BODY);
 	expect(`counts the worked example inside 90-160 (got ${n})`, n >= 90 && n <= 160);
+
+	// The footer, greeting, and sign-off are excluded per §6.1, so appending a
+	// second copy of the footer must not move the count.
+	expect('excludes the compliance footer', countBodyWords(`${GOOD_BODY}\n\n${FOOTER}`) === n);
+
+	// The org name appears in body prose as well as the footer; stripping the
+	// footer must not eat the prose occurrence.
 	expect(
-		'excludes the footer',
-		n < GOOD_BODY.split(/\s+/).length - 20
+		'keeps the org name where it appears in body prose',
+		countBodyWords(GOOD_BODY.replace('FundaMental Health is a San Diego', 'We are a San Diego')) ===
+			n - 1
 	);
 }
 
@@ -115,6 +123,68 @@ console.log('\nClean output');
 		`the Section 11 worked example passes every check (${sum.passed}/${sum.total})`,
 		sum.failures.length === 0,
 		sum.failures.map((f) => `${f.id}: ${f.detail}`).join(' | ')
+	);
+}
+
+console.log('\nDeclined prospects are not judged against §8 routing');
+{
+	// Regression: §8's routing table governs scored prospects. A prospect stopped
+	// by §2 or disqualified by §5.1 never reached scoring, so a null or zero
+	// confidence there must not be reported as a routing failure.
+	const declined: AgentOutput = {
+		prospect_id: 'someone@example.test',
+		status: 'do_not_contact',
+		status_reason: 'Prior contact records an explicit opt-out.',
+		research: {
+			verified_name: 'Imogen Vasquez-Hall',
+			verified_title: 'Senior Wealth Advisor',
+			verified_org: 'Cormorant Wealth Partners',
+			org_type: 'wealth_mgmt',
+			geography: 'San Diego, CA',
+			san_diego_nexus: 'true',
+			sources: []
+		},
+		track: { selected: null, confidence: 0, rationale: null, runners_up: [] },
+		personalization: { anchor: null, anchor_tier: null, anchor_source: null },
+		email: null,
+		confidence: 0,
+		flags: ['prior_opt_out'],
+		resource_gaps: []
+	};
+	const sum = summarize(runRubric(declined, JSON.stringify(declined), false));
+	expect(
+		`a correct do_not_contact output is clean (${sum.passed}/${sum.total})`,
+		sum.failures.length === 0,
+		sum.failures.map((f) => `${f.id}: ${f.detail}`).join(' | ')
+	);
+
+	const stopped: AgentOutput = {
+		prospect_id: 'dale@example.test',
+		status: 'insufficient_input',
+		status_reason: 'company is missing and may not be guessed.',
+		research: null,
+		track: null,
+		personalization: null,
+		email: null,
+		confidence: null,
+		flags: [],
+		resource_gaps: []
+	};
+	const sum2 = summarize(runRubric(stopped, JSON.stringify(stopped), false));
+	expect(
+		`a correct insufficient_input output with null confidence is clean (${sum2.passed}/${sum2.total})`,
+		sum2.failures.length === 0,
+		sum2.failures.map((f) => `${f.id}: ${f.detail}`).join(' | ')
+	);
+
+	// The gate must not swallow the real failure it was protecting.
+	const misrouted = { ...goodOutput(), confidence: 20 };
+	const routing = runRubric(misrouted, '', false).find(
+		(c) => c.id === 'low_confidence_routes_to_review'
+	);
+	expect(
+		'a drafted output scored below 40 still fails routing',
+		routing !== undefined && !routing.passed
 	);
 }
 

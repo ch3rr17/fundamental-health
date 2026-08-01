@@ -165,18 +165,24 @@ export function runRubric(
 		);
 	}
 
+	// §8's routing table governs prospects the agent actually scored. A prospect
+	// stopped by §2 (insufficient_input) or disqualified by §5.1 (do_not_contact)
+	// never reached scoring, so a null or zero confidence there is correct, not a
+	// routing failure.
+	const scored = status === 'drafted' || status === 'needs_human_review';
+
 	const conf = out.confidence;
 	checks.push(
 		check(
 			'confidence_range',
 			'§8',
 			'fail',
-			typeof conf === 'number' && conf >= 0 && conf <= 100,
-			`confidence = ${JSON.stringify(conf)}`
+			typeof conf === 'number' ? conf >= 0 && conf <= 100 : !scored && conf == null,
+			`confidence = ${JSON.stringify(conf)} with status ${status}`
 		)
 	);
 
-	if (typeof conf === 'number' && conf < 40) {
+	if (scored && typeof conf === 'number' && conf < 40) {
 		checks.push(
 			check(
 				'low_confidence_routes_to_review',
@@ -203,7 +209,10 @@ export function runRubric(
 		)
 	);
 
-	if (typeof trackConf === 'number' && trackConf < 50) {
+	// Same reasoning as the confidence gate above: a do_not_contact prospect never
+	// reached track selection, so a zero track confidence there is not a failure
+	// to mark something "unassigned".
+	if (scored && typeof trackConf === 'number' && trackConf < 50) {
 		checks.push(
 			check(
 				'unassigned_when_track_uncertain',
