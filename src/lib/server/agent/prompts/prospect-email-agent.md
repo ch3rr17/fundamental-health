@@ -516,7 +516,7 @@ markdown fence around it. Emit every key below; use `null` for fields that do no
 ```json
 {
 	"prospect_id": "<id or email>",
-	"status": "drafted | needs_human_review | do_not_contact | insufficient_input",
+	"status": "<one of: drafted, needs_human_review, do_not_contact, insufficient_input>",
 	"status_reason": "<one sentence, required unless status is drafted>",
 	"research": {
 		"verified_name": "<full name as found>",
