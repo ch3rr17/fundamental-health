@@ -11,7 +11,14 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"eval": "node evals/run.ts",
+		"eval:selftest": "node evals/selftest.ts",
+		"eval:fast": "node evals/run.ts --no-research --no-judge",
+		"eval:critic": "node evals/critic.ts"
+	},
+	"dependencies": {
+		"@anthropic-ai/sdk": "^0.71.0"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
