@@ -276,7 +276,7 @@
 							? 'Segment'
 							: segmentFilter.size === 1
 								? segmentLabel([...segmentFilter][0])
-								: `${segmentFilter.size} verticals selected`}
+								: `${segmentFilter.size} Segments selected`}
 					</span>
 					<svg
 						width="10"

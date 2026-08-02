@@ -144,7 +144,7 @@
 		searchedSegmentLabel = useFilter
 			? useFilter.size === 1
 				? SEGMENT_LABELS[[...useFilter][0]]
-				: `${useFilter.size} verticals`
+				: `${useFilter.size} Segments`
 			: null;
 		// Demo mode: always show the full card set no matter what was searched.
 		results = DEMO_RESULTS;
@@ -195,7 +195,7 @@
 							? 'Segment'
 							: segmentFilter.size === 1
 								? SEGMENT_LABELS[[...segmentFilter][0]]
-								: `${segmentFilter.size} verticals selected`}
+								: `${segmentFilter.size} Segments selected`}
 					</span>
 					<svg
 						width="10"
