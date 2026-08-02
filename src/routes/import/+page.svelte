@@ -111,7 +111,7 @@
 </script>
 
 <div class="mx-auto max-w-xl px-6 py-16">
-	<a href={resolve('/prospects')} class="text-xs font-bold text-periwinkle-dark">← Back to Prospects</a>
+	<a href={resolve('/prospects')} class="text-xs font-bold text-periwinkle-dark hover:underline">← Back to Prospects</a>
 
 	<h1 class="mt-3 text-2xl font-bold text-navy">Import Prospects</h1>
 	<p class="mt-2 text-sm text-ink">

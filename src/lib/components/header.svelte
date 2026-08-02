@@ -14,7 +14,7 @@
 		{#if page.data.session}
 			<button
 				onclick={() => signOut({ redirectTo: resolve('/') })}
-				class="inline-block cursor-pointer rounded-md border border-coral px-4 py-3 text-center text-sm font-bold tracking-wide text-coral uppercase transition-colors duration-300 ease-in-out hover:bg-coral hover:text-white"
+				class="inline-block cursor-pointer rounded-md border border-coral px-3 py-1.5 text-center text-xs font-bold tracking-wide text-coral uppercase transition-colors duration-300 ease-in-out hover:bg-coral hover:text-white"
 			>
 				Sign out
 			</button>

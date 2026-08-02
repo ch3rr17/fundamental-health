@@ -3,12 +3,15 @@
 	import { goto } from '$app/navigation';
 	import { SvelteSet } from 'svelte/reactivity';
 	import { SEGMENT_LABELS, SEGMENT_ORDER, STATUS_LABELS, QUEUE_STATUSES } from '$lib/segments';
-	import type { Prospect, ProspectStatus, TalkTrackSegment } from '$lib/types';
+	import type { Prospect, ProspectStatus, SegmentAssignment, TalkTrackSegment } from '$lib/types';
 
 	let { data } = $props();
 	const prospects = $derived(data.prospects as Prospect[]);
 
 	let tab = $state<'queue' | 'already-contacted' | 'unassigned'>('queue');
+	let searchQuery = $state('');
+	let contactedSearchQuery = $state('');
+	let unassignedSearchQuery = $state('');
 	const segmentFilter = new SvelteSet<TalkTrackSegment>();
 	const statusFilter = new SvelteSet<ProspectStatus>();
 	let segmentPanelOpen = $state(false);
@@ -28,7 +31,36 @@
 		queueRows.filter((p) => {
 			const matchesSegment = segmentFilter.size === 0 || segmentFilter.has(p.segment as TalkTrackSegment);
 			const matchesStatus = statusFilter.size === 0 || statusFilter.has(p.status);
-			return matchesSegment && matchesStatus;
+			const query = searchQuery.trim().toLowerCase();
+			const matchesSearch =
+				query === '' ||
+				`${p.firstName} ${p.lastName}`.toLowerCase().includes(query) ||
+				(p.organization ?? '').toLowerCase().includes(query) ||
+				(p.title ?? '').toLowerCase().includes(query);
+			return matchesSegment && matchesStatus && matchesSearch;
+		})
+	);
+
+	const filteredAlreadyContactedRows = $derived(
+		alreadyContactedRows.filter((p) => {
+			const query = contactedSearchQuery.trim().toLowerCase();
+			return (
+				query === '' ||
+				`${p.firstName} ${p.lastName}`.toLowerCase().includes(query) ||
+				(p.organization ?? '').toLowerCase().includes(query)
+			);
+		})
+	);
+
+	const filteredUnassignedRows = $derived(
+		unassignedRows.filter((p) => {
+			const query = unassignedSearchQuery.trim().toLowerCase();
+			return (
+				query === '' ||
+				`${p.firstName} ${p.lastName}`.toLowerCase().includes(query) ||
+				(p.organization ?? '').toLowerCase().includes(query) ||
+				(p.title ?? '').toLowerCase().includes(query)
+			);
 		})
 	);
 
@@ -59,16 +91,18 @@
 	}
 
 	function segmentLabel(seg: string) {
+		if (seg === 'unassigned') return 'Unassigned';
 		return SEGMENT_LABELS[seg as TalkTrackSegment] ?? seg;
 	}
 
-	function segmentChipClass(seg: TalkTrackSegment) {
+	function segmentChipClass(seg: SegmentAssignment) {
+		if (seg === 'unassigned') return 'bg-cream-soft text-ink';
 		const map: Record<TalkTrackSegment, string> = {
-			'community-donors': 'bg-coral/15 text-coral',
-			'nonprofit-marketing': 'bg-amber/20 text-amber',
-			'board-prospects': 'bg-navy/10 text-navy',
-			'financial-cra': 'bg-periwinkle-dark/15 text-periwinkle-dark',
-			'daf-giving-circles': 'bg-periwinkle/15 text-periwinkle'
+			'community-donors': 'bg-navy/10 text-navy',
+			'nonprofit-marketing': 'bg-periwinkle/15 text-periwinkle',
+			'board-prospects': 'bg-navy/20 text-navy',
+			'financial-cra': 'bg-ink/8 text-ink',
+			'daf-giving-circles': 'bg-periwinkle/25 text-periwinkle'
 		};
 		return map[seg];
 	}
@@ -87,25 +121,25 @@
 
 <svelte:window onclick={closePanels} />
 
-<div class="mx-auto max-w-5xl px-6 py-12">
+<div class="mx-auto max-w-5xl px-8 py-16">
 	<div class="flex items-center justify-between">
 		<h1 class="text-2xl font-bold text-navy">Prospects</h1>
 		<a
 			href={resolve('/import')}
 			class="rounded-md bg-linear-to-r from-coral to-amber px-4 py-3 text-sm font-bold tracking-wide text-white uppercase hover:from-coral hover:to-coral"
 		>
-			+ Import
+			+ Import Prospects
 		</a>
 	</div>
 
-	<div class="mt-6 flex gap-6 border-b border-cream-dim">
+	<div class="mt-8 flex gap-10 border-b border-cream-dim">
 		<button
 			onclick={() => (tab = 'queue')}
 			class="cursor-pointer border-b-2 px-1 py-2 text-sm font-bold {tab === 'queue'
 				? 'border-coral text-navy'
 				: 'border-transparent text-ink/60'}"
 		>
-			Review <span class="font-normal text-ink/50">{queueRows.length}</span>
+			Review Prospects <span class="ml-1 font-normal text-ink/50">{queueRows.length}</span>
 		</button>
 		<button
 			onclick={() => (tab = 'already-contacted')}
@@ -113,7 +147,7 @@
 				? 'border-coral text-navy'
 				: 'border-transparent text-ink/60'}"
 		>
-			Contacted <span class="font-normal text-ink/50">{alreadyContactedRows.length}</span>
+			Previously Contacted <span class="ml-1 font-normal text-ink/50">{alreadyContactedRows.length}</span>
 		</button>
 		<button
 			onclick={() => (tab = 'unassigned')}
@@ -121,12 +155,29 @@
 				? 'border-coral text-navy'
 				: 'border-transparent text-ink/60'}"
 		>
-			Segment not assigned <span class="font-normal text-ink/50">{unassignedRows.length}</span>
+			Segment not assigned <span class="ml-1 font-normal text-ink/50">{unassignedRows.length}</span>
 		</button>
 	</div>
 
 	{#if tab === 'queue'}
-		<div class="mt-4 flex flex-wrap justify-end gap-3">
+		<div class="mt-6 flex flex-wrap justify-end gap-3">
+			<div class="relative min-w-45 flex-1">
+				<input
+					type="text"
+					bind:value={searchQuery}
+					placeholder="Search prospects…"
+					class="w-full rounded-md border border-cream-dim bg-white px-3 py-2 pr-8 text-sm text-ink placeholder:text-ink/40"
+				/>
+				{#if searchQuery}
+					<button
+						onclick={() => (searchQuery = '')}
+						aria-label="Clear search"
+						class="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer text-ink/40 hover:text-ink"
+					>
+						×
+					</button>
+				{/if}
+			</div>
 			<div class="relative" bind:this={segmentWrapperEl}>
 				<button
 					onclick={() => {
@@ -232,14 +283,16 @@
 			</div>
 		</div>
 
-		<div class="mt-4 overflow-x-auto rounded-md border border-cream-dim bg-white">
+		<div class="mt-6 overflow-x-auto rounded-md border border-cream-dim bg-white">
 			<table class="w-full text-sm">
 				<thead>
 					<tr class="bg-cream-soft text-left text-xs tracking-wide text-ink/60 uppercase">
-						<th class="px-4 py-2 font-bold">Prospect</th>
-						<th class="px-4 py-2 font-bold">Segment</th>
-						<th class="px-4 py-2 font-bold">Status</th>
-						<th class="px-4 py-2"></th>
+						<th class="px-5 py-3 font-bold">List</th>
+						<th class="px-5 py-3 font-bold">Prospect</th>
+						<th class="px-5 py-3 font-bold">Segment</th>
+						<th class="px-5 py-3 font-bold">Match</th>
+						<th class="px-5 py-3 font-bold">Status</th>
+						<th class="px-5 py-3"></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -248,68 +301,191 @@
 							onclick={() => openProspect(p.id)}
 							class="cursor-pointer border-t border-cream-dim hover:bg-gray-100"
 						>
-							<td class="px-4 py-3">
+							<td class="px-5 py-4 text-xs text-ink/70">
+								{p.source === 'apollo' ? 'Apollo' : 'CSV'}
+							</td>
+							<td class="px-5 py-4">
 								<div class="font-bold text-ink">{p.firstName} {p.lastName}</div>
 								<div class="text-xs text-ink/60">{p.title ?? ''}{p.title && p.organization ? ', ' : ''}{p.organization ?? ''}</div>
 							</td>
-							<td class="px-4 py-3">
+							<td class="px-5 py-4">
 								<span class="rounded-full px-2 py-0.5 text-xs font-bold {segmentChipClass(p.segment as TalkTrackSegment)}">
-									{segmentLabel(p.segment)}{p.segmentConfidence != null ? ` · ${Math.round(p.segmentConfidence * 100)}% match` : ''}
+									{segmentLabel(p.segment)}
 								</span>
 							</td>
-							<td class="px-4 py-3">
+							<td class="px-5 py-4 text-xs text-ink/70">
+								{p.segmentConfidence != null ? `${Math.round(p.segmentConfidence * 100)}%` : '—'}
+							</td>
+							<td class="px-5 py-4">
 								<span class="rounded-full px-2 py-0.5 text-xs font-bold {statusChipClass(p.status)}">
 									{STATUS_LABELS[p.status]}
 								</span>
 							</td>
-							<td class="px-4 py-3 text-right">
+							<td class="px-5 py-4 text-right">
 								<a
 								href={resolve('/prospects/[id]', { id: p.id })}
 								onclick={(e) => e.stopPropagation()}
-								class="text-xs font-bold text-periwinkle-dark"
+								class="text-xs font-bold text-periwinkle-dark hover:underline"
 							>
 								Open →
 							</a>
 							</td>
 						</tr>
 					{:else}
-						<tr><td colspan="4" class="px-4 py-8 text-center text-sm text-ink/50">No Prospects match these filters.</td></tr>
+						<tr><td colspan="6" class="px-4 py-8 text-center text-sm text-ink/50">No Prospects match these filters.</td></tr>
 					{/each}
 				</tbody>
 			</table>
 		</div>
 	{:else if tab === 'already-contacted'}
-		<div class="mt-4 overflow-hidden rounded-md border border-cream-dim bg-white">
-			{#each alreadyContactedRows as p (p.id)}
-				<div class="flex items-center justify-between border-b border-cream-dim px-4 py-3 text-sm last:border-b-0">
-					<div>
-						<div class="font-bold text-ink">{p.firstName} {p.lastName}</div>
-						<div class="text-xs text-ink/60">
-							{p.priorTalkTrack ? segmentLabel(p.priorTalkTrack) : 'Prior segment unknown'}
-							{p.priorContactDate ? ` · contacted ${new Date(p.priorContactDate).toLocaleDateString()}` : ''}
-						</div>
-					</div>
-					<a href={resolve('/prospects/[id]', { id: p.id })} class="rounded-full bg-cream-dim px-3 py-1 text-xs font-bold text-ink/70">
-						Re-approach anyway
-					</a>
-				</div>
-			{:else}
-				<p class="px-4 py-8 text-center text-sm text-ink/50">No already-contacted prospects.</p>
-			{/each}
+		<div class="relative mt-6">
+			<input
+				type="text"
+				bind:value={contactedSearchQuery}
+				placeholder="Search prospects…"
+				class="w-full rounded-md border border-cream-dim bg-white px-3 py-2 pr-8 text-sm text-ink placeholder:text-ink/40"
+			/>
+			{#if contactedSearchQuery}
+				<button
+					onclick={() => (contactedSearchQuery = '')}
+					aria-label="Clear search"
+					class="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer text-ink/40 hover:text-ink"
+				>
+					×
+				</button>
+			{/if}
+		</div>
+
+		<div class="mt-6 overflow-x-auto rounded-md border border-cream-dim bg-white">
+			<table class="w-full text-sm">
+				<thead>
+					<tr class="bg-cream-soft text-left text-xs tracking-wide text-ink/60 uppercase">
+						<th class="px-5 py-3 font-bold">List</th>
+						<th class="px-5 py-3 font-bold">Prospect</th>
+						<th class="px-5 py-3 font-bold">Segment</th>
+						<th class="px-5 py-3 font-bold">Match</th>
+						<th class="px-5 py-3 font-bold">Status</th>
+						<th class="px-5 py-3"></th>
+					</tr>
+				</thead>
+				<tbody>
+					{#each filteredAlreadyContactedRows as p (p.id)}
+						<tr
+							onclick={() => openProspect(p.id)}
+							class="cursor-pointer border-t border-cream-dim hover:bg-gray-100"
+						>
+							<td class="px-5 py-4 text-xs text-ink/70">
+								{p.source === 'apollo' ? 'Apollo' : 'CSV'}
+							</td>
+							<td class="px-5 py-4">
+								<div class="font-bold text-ink">{p.firstName} {p.lastName}</div>
+								<div class="text-xs text-ink/60">{p.title ?? ''}{p.title && p.organization ? ', ' : ''}{p.organization ?? ''}</div>
+							</td>
+							<td class="px-5 py-4">
+								{#if p.priorTalkTrack}
+									<span class="rounded-full px-2 py-0.5 text-xs font-bold {segmentChipClass(p.priorTalkTrack)}">
+										{segmentLabel(p.priorTalkTrack)}
+									</span>
+								{:else}
+									<span class="text-xs text-ink/50">—</span>
+								{/if}
+							</td>
+							<td class="px-5 py-4 text-xs text-ink/70">
+								{p.segmentConfidence != null ? `${Math.round(p.segmentConfidence * 100)}%` : '—'}
+							</td>
+							<td class="px-5 py-4">
+								<span class="rounded-full px-2 py-0.5 text-xs font-bold {statusChipClass(p.status)}">
+									{STATUS_LABELS[p.status]}
+								</span>
+							</td>
+							<td class="px-5 py-4 text-right">
+								<a
+									href={resolve('/prospects/[id]', { id: p.id })}
+									onclick={(e) => e.stopPropagation()}
+									class="text-xs font-bold text-periwinkle-dark hover:underline"
+								>
+									Open →
+								</a>
+							</td>
+						</tr>
+					{:else}
+						<tr><td colspan="6" class="px-4 py-8 text-center text-sm text-ink/50">No already-contacted prospects.</td></tr>
+					{/each}
+				</tbody>
+			</table>
 		</div>
 	{:else}
-		<div class="mt-4 overflow-hidden rounded-md border border-cream-dim bg-white">
-			{#each unassignedRows as p (p.id)}
-				<div class="flex items-center justify-between border-b border-cream-dim px-4 py-3 text-sm last:border-b-0">
-					<div>
-						<div class="font-bold text-ink">{p.firstName} {p.lastName}</div>
-						<div class="text-xs text-ink/60">{p.title ?? ''}{p.title && p.organization ? ', ' : ''}{p.organization ?? ''}</div>
-					</div>
-					<a href={resolve('/prospects/[id]', { id: p.id })} class="text-xs font-bold text-periwinkle-dark">Tag manually →</a>
-				</div>
-			{:else}
-				<p class="px-4 py-8 text-center text-sm text-ink/50">No unassigned prospects.</p>
-			{/each}
+		<div class="relative mt-6">
+			<input
+				type="text"
+				bind:value={unassignedSearchQuery}
+				placeholder="Search prospects…"
+				class="w-full rounded-md border border-cream-dim bg-white px-3 py-2 pr-8 text-sm text-ink placeholder:text-ink/40"
+			/>
+			{#if unassignedSearchQuery}
+				<button
+					onclick={() => (unassignedSearchQuery = '')}
+					aria-label="Clear search"
+					class="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer text-ink/40 hover:text-ink"
+				>
+					×
+				</button>
+			{/if}
+		</div>
+
+		<div class="mt-6 overflow-x-auto rounded-md border border-cream-dim bg-white">
+			<table class="w-full text-sm">
+				<thead>
+					<tr class="bg-cream-soft text-left text-xs tracking-wide text-ink/60 uppercase">
+						<th class="px-5 py-3 font-bold">List</th>
+						<th class="px-5 py-3 font-bold">Prospect</th>
+						<th class="px-5 py-3 font-bold">Segment</th>
+						<th class="px-5 py-3 font-bold">Match</th>
+						<th class="px-5 py-3 font-bold">Status</th>
+						<th class="px-5 py-3"></th>
+					</tr>
+				</thead>
+				<tbody>
+					{#each filteredUnassignedRows as p (p.id)}
+						<tr
+							onclick={() => openProspect(p.id)}
+							class="cursor-pointer border-t border-cream-dim hover:bg-gray-100"
+						>
+							<td class="px-5 py-4 text-xs text-ink/70">
+								{p.source === 'apollo' ? 'Apollo' : 'CSV'}
+							</td>
+							<td class="px-5 py-4">
+								<div class="font-bold text-ink">{p.firstName} {p.lastName}</div>
+								<div class="text-xs text-ink/60">{p.title ?? ''}{p.title && p.organization ? ', ' : ''}{p.organization ?? ''}</div>
+							</td>
+							<td class="px-5 py-4">
+								<span class="rounded-full px-2 py-0.5 text-xs font-bold {segmentChipClass(p.segment)}">
+									{segmentLabel(p.segment)}
+								</span>
+							</td>
+							<td class="px-5 py-4 text-xs text-ink/70">
+								{p.segmentConfidence != null ? `${Math.round(p.segmentConfidence * 100)}%` : '—'}
+							</td>
+							<td class="px-5 py-4">
+								<span class="rounded-full px-2 py-0.5 text-xs font-bold {statusChipClass(p.status)}">
+									{STATUS_LABELS[p.status]}
+								</span>
+							</td>
+							<td class="px-5 py-4 text-right">
+								<a
+									href={resolve('/prospects/[id]', { id: p.id })}
+									onclick={(e) => e.stopPropagation()}
+									class="text-xs font-bold text-periwinkle-dark hover:underline"
+								>
+									Open →
+								</a>
+							</td>
+						</tr>
+					{:else}
+						<tr><td colspan="6" class="px-4 py-8 text-center text-sm text-ink/50">No unassigned prospects.</td></tr>
+					{/each}
+				</tbody>
+			</table>
 		</div>
 	{/if}
 </div>
