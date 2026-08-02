@@ -22,7 +22,7 @@ vi.mock('@anthropic-ai/sdk', () => ({
 }));
 
 import { draftEmails, prospects } from './schema.js';
-import { generateDraft } from './draft.js';
+import { generateDraft, stripDashes } from './draft.js';
 
 const PROSPECT_ROW = {
 	id: 'prospect-1',
@@ -142,5 +142,58 @@ describe('generateDraft', () => {
 		await expect(generateDraft('prospect-1')).rejects.toThrow(
 			'Failed to parse AI response as JSON'
 		);
+	});
+
+	it('strips en/em dashes from the persisted subject and body', async () => {
+		const dashJson = JSON.stringify({
+			subject: 'Quick update — new numbers',
+			body: 'We served 2020–2026 families — thanks to you.',
+			researchSummary: 'Summary',
+			researchConfidence: 0.8
+		});
+		selectMock.mockReturnValue(chainable([PROSPECT_ROW]));
+		const insertChain = chainable([{ id: 'draft-1' }]);
+		insertMock.mockReturnValue(insertChain);
+		updateMock.mockReturnValue(chainable(undefined));
+		anthropicCreateMock.mockResolvedValue(anthropicResponse(dashJson));
+
+		await generateDraft('prospect-1');
+
+		expect(insertChain.values).toHaveBeenCalledWith(
+			expect.objectContaining({
+				subject: 'Quick update, new numbers',
+				body: 'We served 2020-2026 families. Thanks to you.'
+			})
+		);
+	});
+});
+
+describe('stripDashes', () => {
+	it('leaves text without dashes unchanged', () => {
+		expect(stripDashes('No dashes here.')).toBe('No dashes here.');
+	});
+
+	it('collapses a digit range into a bare hyphen', () => {
+		expect(stripDashes('Served 2020–2026 families.')).toBe('Served 2020-2026 families.');
+	});
+
+	it('replaces a paired dash aside with commas', () => {
+		expect(stripDashes('Our program — which launched in 2021 — grew fast.')).toBe(
+			'Our program, which launched in 2021, grew fast.'
+		);
+	});
+
+	it('splits a lone dash into two sentences when enough precedes it', () => {
+		expect(stripDashes('I saw your work at Acme — it really stood out to me.')).toBe(
+			'I saw your work at Acme. It really stood out to me.'
+		);
+	});
+
+	it('treats a lone dash as a comma pause when little precedes it', () => {
+		expect(stripDashes('Thanks — really appreciate it.')).toBe('Thanks, really appreciate it.');
+	});
+
+	it('falls back to a hyphen for dashes with no surrounding spaces', () => {
+		expect(stripDashes('one—two—done')).toBe('one-two-done');
 	});
 });
