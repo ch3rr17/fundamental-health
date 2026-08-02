@@ -68,7 +68,7 @@ async function upsertProfile(
 	if (draft) {
 		attributes.properties = {
 			draft_subject: draft.subject,
-			draft_body: draft.body,
+			draft_body: draft.body.replace(/\n/g, '<br>'),
 			talk_track_segment: draft.segment
 		};
 	}
