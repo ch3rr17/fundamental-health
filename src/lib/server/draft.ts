@@ -18,7 +18,6 @@ function getClient(): Anthropic {
 // Demo sender until real user accounts exist.
 const SENDER_NAME = 'Jordan Lee';
 
-const SYSTEM_PROMPT = `You are a fundraising outreach assistant for FundaMental Health, a San Diego nonprofit that provides mental health services to underserved communities through its Neighbors in Need program.
 // Named source for the sender's role until a per-user role field exists (see #36).
 const DEFAULT_SENDER_ROLE = 'Development Associate';
 
@@ -247,24 +246,6 @@ Generate the email now. Return valid JSON only.`;
 	const parsed = parseDraftResponse(
 		response.content[0].type === 'text' ? response.content[0].text : ''
 	);
-
-	// Strip markdown fencing if the model wraps the JSON
-	text = text
-		.replace(/^```(?:json)?\s*\n?/i, '')
-		.replace(/\n?```\s*$/i, '')
-		.trim();
-
-	let parsed: {
-		subject: string;
-		body: string;
-		researchSummary: string;
-		researchConfidence: number;
-	};
-	try {
-		parsed = JSON.parse(text);
-	} catch {
-		throw new Error('Failed to parse AI response as JSON');
-	}
 
 	const subject = stripDashes(parsed.subject);
 	const body = stripDashes(parsed.body).replaceAll('[Your Name]', SENDER_NAME);
