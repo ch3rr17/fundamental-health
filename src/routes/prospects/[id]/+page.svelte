@@ -202,7 +202,7 @@
 					disabled={busy}
 					class="cursor-pointer rounded-md bg-linear-to-r from-coral to-amber px-3 py-2 text-xs font-bold tracking-wide text-white uppercase disabled:cursor-not-allowed disabled:opacity-50"
 				>
-				{busy ? 'Re-approaching…' : 'Research and Draft Email'}
+				{busy ? 'Researching and drafting email…' : 'Research and Draft Email'}
 			</button>
 		</div>
 

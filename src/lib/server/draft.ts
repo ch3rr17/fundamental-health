@@ -14,6 +14,9 @@ function getClient() {
 	return new Anthropic({ apiKey });
 }
 
+// Demo sender until real user accounts exist.
+const SENDER_NAME = 'Jordan Lee';
+
 const SYSTEM_PROMPT = `You are a fundraising outreach assistant for FundaMental Health, a San Diego nonprofit that provides mental health services to underserved communities through its Neighbors in Need program.
 
 Your job is to draft a personalized outreach email for a prospect based on:
@@ -27,7 +30,7 @@ STRICT RULES — follow these exactly:
 - Keep it concise — 150-250 words for the body.
 - Use the talk-track framing and CTA provided, adapted naturally to the prospect.
 - Do NOT mention that you are an AI or that this was auto-generated.
-- Sign off as the Development Associate at FundaMental Health (leave the name as [Your Name] for the intern to fill in).
+- Sign off as ${SENDER_NAME}, Development Associate at FundaMental Health.
 - NEVER use en dashes (–) or em dashes (—), and never substitute a hyphen set off with spaces ("word - word") in their place either. Rewrite with a comma or period instead.
 - Avoid stock AI-sounding phrasing ("I hope this finds you well," "I wanted to reach out," neatly parallel three-part sentences). Vary sentence length and keep the voice plainspoken, the way a real development associate would actually write.
 
@@ -123,7 +126,7 @@ Generate the email now. Return valid JSON only.`;
 	}
 
 	const subject = stripDashes(parsed.subject);
-	const body = stripDashes(parsed.body);
+	const body = stripDashes(parsed.body).replaceAll('[Your Name]', SENDER_NAME);
 
 	const [draft] = await db
 		.insert(draftEmails)
