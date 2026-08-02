@@ -162,7 +162,7 @@ describe('generateDraft', () => {
 		expect(insertChain.values).toHaveBeenCalledWith(
 			expect.objectContaining({
 				subject: 'Quick update, new numbers',
-				body: 'We served 2020-2026 families. Thanks to you.'
+				body: 'We served 2020-2026 families, thanks to you.'
 			})
 		);
 	});
@@ -177,23 +177,31 @@ describe('stripDashes', () => {
 		expect(stripDashes('Served 2020–2026 families.')).toBe('Served 2020-2026 families.');
 	});
 
-	it('replaces a paired dash aside with commas', () => {
+	it('replaces a paired, spaced dash aside with commas', () => {
 		expect(stripDashes('Our program — which launched in 2021 — grew fast.')).toBe(
 			'Our program, which launched in 2021, grew fast.'
 		);
 	});
 
-	it('splits a lone dash into two sentences when enough precedes it', () => {
+	it('replaces a lone, spaced dash with a comma', () => {
 		expect(stripDashes('I saw your work at Acme — it really stood out to me.')).toBe(
-			'I saw your work at Acme. It really stood out to me.'
+			'I saw your work at Acme, it really stood out to me.'
 		);
 	});
 
-	it('treats a lone dash as a comma pause when little precedes it', () => {
-		expect(stripDashes('Thanks — really appreciate it.')).toBe('Thanks, really appreciate it.');
+	it('replaces a dash with no surrounding spaces the same way as a spaced one', () => {
+		// Regression: the model sometimes types the dash tight against both words
+		// ("program—direct"). It means the same thing as a spaced dash and must not
+		// be smashed into a fake compound word.
+		expect(stripDashes('Neighbors in Need program—direct mental health services.')).toBe(
+			'Neighbors in Need program, direct mental health services.'
+		);
+		expect(stripDashes('No ask—just a chance to learn from each other.')).toBe(
+			'No ask, just a chance to learn from each other.'
+		);
 	});
 
-	it('falls back to a hyphen for dashes with no surrounding spaces', () => {
-		expect(stripDashes('one—two—done')).toBe('one-two-done');
+	it('handles multiple unspaced dashes in one string', () => {
+		expect(stripDashes('one—two—done')).toBe('one, two, done');
 	});
 });
