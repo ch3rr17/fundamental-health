@@ -83,6 +83,7 @@ describe('PATCH /api/drafts/[id]', () => {
 	});
 
 	it('cascades an approval to the prospect when approved is set to true', async () => {
+		selectMock.mockReturnValue(chainable([]));
 		const draftChain = chainable([{ id: 'draft-1', prospectId: 'prospect-1', approved: true }]);
 		const prospectChain = chainable(undefined);
 		updateMock.mockReturnValueOnce(draftChain).mockReturnValueOnce(prospectChain);
@@ -93,5 +94,46 @@ describe('PATCH /api/drafts/[id]', () => {
 		expect(updateMock).toHaveBeenCalledTimes(2);
 		expect(updateMock).toHaveBeenNthCalledWith(2, prospects);
 		expect(prospectChain.set).toHaveBeenCalledWith(expect.objectContaining({ status: 'approved' }));
+	});
+
+	it('rejects approval with 409 when the prospect is flagged needs-review and not acknowledged', async () => {
+		selectMock.mockReturnValue(
+			chainable([{ prospect: { id: 'prospect-1', status: 'needs-review' } }])
+		);
+
+		const res = await PATCH(makeEvent({ body: { approved: true } }));
+
+		expect(res.status).toBe(409);
+		expect(await res.json()).toEqual(expect.objectContaining({ needsReviewAcknowledgement: true }));
+		expect(updateMock).not.toHaveBeenCalled();
+	});
+
+	it('allows approval of a needs-review prospect when the review is explicitly acknowledged', async () => {
+		selectMock.mockReturnValue(
+			chainable([{ prospect: { id: 'prospect-1', status: 'needs-review' } }])
+		);
+		const draftChain = chainable([{ id: 'draft-1', prospectId: 'prospect-1', approved: true }]);
+		const prospectChain = chainable(undefined);
+		updateMock.mockReturnValueOnce(draftChain).mockReturnValueOnce(prospectChain);
+
+		const res = await PATCH(makeEvent({ body: { approved: true, acknowledgeReview: true } }));
+
+		expect(res.status).toBe(200);
+		expect(updateMock).toHaveBeenCalledTimes(2);
+		expect(prospectChain.set).toHaveBeenCalledWith(expect.objectContaining({ status: 'approved' }));
+	});
+
+	it('does not block approval for a prospect in a normal (non needs-review) status', async () => {
+		selectMock.mockReturnValue(
+			chainable([{ prospect: { id: 'prospect-1', status: 'draft-ready' } }])
+		);
+		const draftChain = chainable([{ id: 'draft-1', prospectId: 'prospect-1', approved: true }]);
+		const prospectChain = chainable(undefined);
+		updateMock.mockReturnValueOnce(draftChain).mockReturnValueOnce(prospectChain);
+
+		const res = await PATCH(makeEvent({ body: { approved: true } }));
+
+		expect(res.status).toBe(200);
+		expect(updateMock).toHaveBeenCalledTimes(2);
 	});
 });
