@@ -144,7 +144,7 @@
 </script>
 
 <div class="mx-auto max-w-5xl px-6 py-12">
-	<a href={resolve('/queue')} class="text-xs font-bold text-periwinkle-dark">← Back to Prospects</a>
+	<a href={resolve('/prospects')} class="text-xs font-bold text-periwinkle-dark">← Back to Prospects</a>
 
 	<div class="mt-3 flex items-start justify-between">
 		<div>
@@ -293,19 +293,14 @@
 
 		{#if !draft.approved && !editing}
 			<div class="mt-4 flex justify-end gap-2">
-				<a
-					href={resolve('/queue')}
-					class="rounded-md border border-cream-dim px-4 py-3 text-sm font-bold text-ink/70 hover:bg-cream-soft"
-				>
-					Cancel
-				</a>
-				<button
-					onclick={startEdit}
-					disabled={busy}
-					class="cursor-pointer rounded-md border border-cream-dim px-4 py-3 text-sm font-bold text-ink/70 disabled:cursor-not-allowed disabled:opacity-50"
-				>
-					Edit
-				</button>
+				{#if !busy}
+					<button
+						onclick={startEdit}
+						class="cursor-pointer rounded-md border border-cream-dim px-4 py-3 text-sm font-bold text-ink/70"
+					>
+						Edit
+					</button>
+				{/if}
 				<button
 					onclick={approveAndPush}
 					disabled={busy}

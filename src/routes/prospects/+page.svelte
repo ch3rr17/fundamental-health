@@ -81,7 +81,7 @@
 	}
 
 	function openProspect(id: string) {
-		goto(resolve('/queue/[id]', { id }));
+		goto(resolve('/prospects/[id]', { id }));
 	}
 </script>
 
@@ -264,7 +264,7 @@
 							</td>
 							<td class="px-4 py-3 text-right">
 								<a
-								href={resolve('/queue/[id]', { id: p.id })}
+								href={resolve('/prospects/[id]', { id: p.id })}
 								onclick={(e) => e.stopPropagation()}
 								class="text-xs font-bold text-periwinkle-dark"
 							>
@@ -289,7 +289,7 @@
 							{p.priorContactDate ? ` · contacted ${new Date(p.priorContactDate).toLocaleDateString()}` : ''}
 						</div>
 					</div>
-					<a href={resolve('/queue/[id]', { id: p.id })} class="rounded-full bg-cream-dim px-3 py-1 text-xs font-bold text-ink/70">
+					<a href={resolve('/prospects/[id]', { id: p.id })} class="rounded-full bg-cream-dim px-3 py-1 text-xs font-bold text-ink/70">
 						Re-approach anyway
 					</a>
 				</div>
@@ -305,7 +305,7 @@
 						<div class="font-bold text-ink">{p.firstName} {p.lastName}</div>
 						<div class="text-xs text-ink/60">{p.title ?? ''}{p.title && p.organization ? ', ' : ''}{p.organization ?? ''}</div>
 					</div>
-					<a href={resolve('/queue/[id]', { id: p.id })} class="text-xs font-bold text-periwinkle-dark">Tag manually →</a>
+					<a href={resolve('/prospects/[id]', { id: p.id })} class="text-xs font-bold text-periwinkle-dark">Tag manually →</a>
 				</div>
 			{:else}
 				<p class="px-4 py-8 text-center text-sm text-ink/50">No unassigned prospects.</p>
