@@ -18,9 +18,9 @@ export const SEGMENT_ORDER: TalkTrackSegment[] = [
 
 export const STATUS_LABELS: Record<ProspectStatus, string> = {
 	imported: 'Ready for research',
-	'already-contacted': 'Already contacted',
+	'already-contacted': 'Previously Contacted',
 	'needs-review': 'Needs review',
-	'draft-ready': 'Drafted — in review',
+	'draft-ready': 'Email drafted',
 	approved: 'Approved — ready to push',
 	pushed: 'Pushed — unconfirmed',
 	'send-confirmed': 'Send confirmed',
