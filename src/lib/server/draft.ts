@@ -14,7 +14,43 @@ function getClient() {
 	return new Anthropic({ apiKey });
 }
 
-const SYSTEM_PROMPT = `You are a fundraising outreach assistant for FundaMental Health, a San Diego nonprofit that provides mental health services to underserved communities through its Neighbors in Need program.
+// Named source for the sender's role until a per-user role field exists (see #36).
+const DEFAULT_SENDER_ROLE = 'Development Associate';
+
+// The Cc category covers every control character (tab, newline, carriage return, and
+// the rest). The Z category covers every Unicode separator, including line/paragraph
+// separators that live outside Cc and any exotic whitespace (non-breaking space, em
+// space, ...) — all of it collapses to one plain space below.
+const LINE_BREAKING_OR_EXOTIC_WHITESPACE = /[\p{Cc}\p{Z}]+/gu;
+
+// The Cf category covers invisible formatting characters (zero-width space, zero-width
+// joiner, soft hyphen, ...). These can't fake a new line the way Cc/Z can, but they're
+// still invisible bytes with no reason to be in a signature, so they're dropped rather
+// than replaced with a space.
+const ZERO_WIDTH_OR_FORMAT_CHARS = /\p{Cf}/gu;
+
+// senderName comes from the OAuth provider's display name, which the account holder
+// controls and Google doesn't verify. It's interpolated straight into the system
+// prompt below, so strip anything that could read as an extra instruction line.
+function sanitizeSenderName(senderName: string | undefined): string | undefined {
+	const cleaned = senderName
+		?.replace(ZERO_WIDTH_OR_FORMAT_CHARS, '')
+		.replace(LINE_BREAKING_OR_EXOTIC_WHITESPACE, ' ')
+		.trim()
+		.slice(0, 100)
+		.trim();
+	return cleaned ? cleaned : undefined;
+}
+
+// senderRole must stay internally-controlled (never pass a user-supplied value)
+// until it goes through the same sanitization as senderName.
+function buildSystemPrompt(senderName: string | undefined, senderRole: string): string {
+	const name = sanitizeSenderName(senderName);
+	const signoffInstruction = name
+		? `- Sign off as ${name}, ${senderRole} at FundaMental Health.`
+		: `- Sign off as the ${senderRole} at FundaMental Health (leave the name as [Your Name] for the intern to fill in).`;
+
+	return `You are a fundraising outreach assistant for FundaMental Health, a San Diego nonprofit that provides mental health services to underserved communities through its Neighbors in Need program.
 
 Your job is to draft a personalized outreach email for a prospect based on:
 1. The prospect's profile information (name, title, org, location)
@@ -27,7 +63,7 @@ STRICT RULES — follow these exactly:
 - Keep it concise — 150-250 words for the body.
 - Use the talk-track framing and CTA provided, adapted naturally to the prospect.
 - Do NOT mention that you are an AI or that this was auto-generated.
-- Sign off as the Development Associate at FundaMental Health (leave the name as [Your Name] for the intern to fill in).
+${signoffInstruction}
 - NEVER use en dashes (–) or em dashes (—), and never substitute a hyphen set off with spaces ("word - word") in their place either. Rewrite with a comma or period instead.
 - Avoid stock AI-sounding phrasing ("I hope this finds you well," "I wanted to reach out," neatly parallel three-part sentences). Vary sentence length and keep the voice plainspoken, the way a real development associate would actually write.
 
@@ -38,6 +74,7 @@ OUTPUT FORMAT — return valid JSON only, no markdown fencing:
   "researchSummary": "2-3 sentence summary of what you know about this prospect and why they fit this segment",
   "researchConfidence": 0.0 to 1.0 indicating how much public information was available to personalize with
 }`;
+}
 
 // Safety net behind the system prompt's dash instruction: the model occasionally
 // slips one in anyway, and an em/en dash is a well-known "this was AI-written" tell.
@@ -60,7 +97,11 @@ export function stripDashes(input: string): string {
 	return text;
 }
 
-export async function generateDraft(prospectId: string) {
+export async function generateDraft(
+	prospectId: string,
+	senderName?: string,
+	senderRole: string = DEFAULT_SENDER_ROLE
+) {
 	const prospect = await db.select().from(prospects).where(eq(prospects.id, prospectId));
 	if (prospect.length === 0) {
 		throw new Error('Prospect not found');
@@ -98,7 +139,7 @@ Generate the email now. Return valid JSON only.`;
 	const response = await client.messages.create({
 		model: 'claude-haiku-4-5-20251001',
 		max_tokens: 1024,
-		system: SYSTEM_PROMPT,
+		system: buildSystemPrompt(senderName, senderRole),
 		messages: [{ role: 'user', content: userPrompt }]
 	});
 

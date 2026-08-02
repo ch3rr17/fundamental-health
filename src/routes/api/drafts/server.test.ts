@@ -6,7 +6,7 @@ vi.mock('$lib/server/draft.js', () => ({ generateDraft: generateDraftMock }));
 import { POST } from './+server.js';
 
 function makeEvent(options: { session?: unknown; body: unknown }): Parameters<typeof POST>[0] {
-	const { session = { user: { email: 'jane@example.com' } }, body } = options;
+	const { session = { user: { email: 'jane@example.com', name: 'Jane Doe' } }, body } = options;
 	return {
 		locals: { auth: async () => session },
 		request: { json: async () => body }
@@ -52,6 +52,20 @@ describe('POST /api/drafts', () => {
 
 		expect(res.status).toBe(201);
 		expect(await res.json()).toEqual({ id: 'draft-1', subject: 'Hello' });
-		expect(generateDraftMock).toHaveBeenCalledWith('p1');
+		expect(generateDraftMock).toHaveBeenCalledWith('p1', 'Jane Doe');
+	});
+
+	it('passes undefined as the sender name when the session has no name', async () => {
+		generateDraftMock.mockResolvedValue({ id: 'draft-1', subject: 'Hello' });
+
+		const res = await POST(
+			makeEvent({
+				session: { user: { email: 'jane@example.com' } },
+				body: { prospectId: 'p1' }
+			})
+		);
+
+		expect(res.status).toBe(201);
+		expect(generateDraftMock).toHaveBeenCalledWith('p1', undefined);
 	});
 });
