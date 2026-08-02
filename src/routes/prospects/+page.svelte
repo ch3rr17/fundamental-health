@@ -156,7 +156,7 @@
 	function statusChipClass(status: ProspectStatus) {
 		if (status === 'send-confirmed' || status === 'logged') return 'bg-sky text-periwinkle-dark';
 		if (status === 'approved' || status === 'pushed') return 'bg-amber/20 text-amber';
-		if (status === 'draft-ready') return 'bg-coral/15 text-coral';
+		if (status === 'draft-ready') return 'bg-navy/10 text-navy';
 		return 'bg-cream-dim text-ink/70';
 	}
 

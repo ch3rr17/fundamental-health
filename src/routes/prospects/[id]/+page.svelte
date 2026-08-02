@@ -11,7 +11,7 @@
 	function statusChipClass(status: Prospect['status']) {
 		if (status === 'send-confirmed' || status === 'logged') return 'bg-sky text-periwinkle-dark';
 		if (status === 'approved' || status === 'pushed') return 'bg-amber/20 text-amber';
-		if (status === 'draft-ready') return 'bg-coral/15 text-coral';
+		if (status === 'draft-ready') return 'bg-navy/10 text-navy';
 		return 'bg-cream-dim text-ink/70';
 	}
 
@@ -180,6 +180,7 @@
 				{STATUS_LABELS[prospect.status]}
 			</span>
 		</div>
+		<hr class="mt-6 border-cream-dim" />
 		<div class="mt-6 flex items-end gap-3">
 				<div>
 					<label for="manual-segment" class="mb-2 block text-xs font-bold tracking-wide text-ink/60 uppercase">
@@ -238,6 +239,7 @@
 				{STATUS_LABELS[prospect.status]}
 			</span>
 		</div>
+		<hr class="mt-6 border-cream-dim" />
 		<div class="mt-6 flex items-end gap-3">
 				<div>
 					<label for="manual-segment" class="mb-2 block text-xs font-bold tracking-wide text-ink/60 uppercase">
@@ -301,6 +303,7 @@
 				{STATUS_LABELS[prospect.status]}
 			</span>
 		</div>
+		<hr class="mt-6 border-cream-dim" />
 		<div class="mt-6">
 				<button
 					onclick={generateDraft}
@@ -350,6 +353,7 @@
 				{STATUS_LABELS[prospect.status]}
 			</span>
 		</div>
+		<hr class="mt-6 border-cream-dim" />
 		<div class="mt-6 grid grid-cols-1 gap-4 {draft.researchSummary ? 'md:grid-cols-[280px_1fr]' : ''}">
 			{#if draft.researchSummary}
 				<div class="rounded-lg border border-cream-dim bg-white p-5">
