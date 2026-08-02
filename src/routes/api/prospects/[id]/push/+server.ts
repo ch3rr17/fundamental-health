@@ -5,12 +5,17 @@ import { prospects, draftEmails } from '$lib/server/schema.js';
 import { eq, and } from 'drizzle-orm';
 import { pushToKlaviyo, pollSendConfirmation } from '$lib/server/klaviyo.js';
 import type { TalkTrackSegment } from '$lib/types.js';
+import { requireAuth } from '$lib/server/auth-guard.js';
 
 /**
  * Push an approved prospect to Klaviyo.
  * Hard gate: draft must be approved before push is allowed.
  */
-export const POST: RequestHandler = async ({ params }) => {
+export const POST: RequestHandler = async (event) => {
+	const denied = await requireAuth(event);
+	if (denied) return denied;
+
+	const { params } = event;
 	const [prospect] = await db.select().from(prospects).where(eq(prospects.id, params.id));
 
 	if (!prospect) {

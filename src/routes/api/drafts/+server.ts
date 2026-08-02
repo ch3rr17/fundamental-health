@@ -1,9 +1,14 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { generateDraft } from '$lib/server/draft.js';
+import { requireAuth } from '$lib/server/auth-guard.js';
 
 /** Generate an AI draft for a prospect. */
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async (event) => {
+	const denied = await requireAuth(event);
+	if (denied) return denied;
+
+	const { request } = event;
 	const { prospectId } = await request.json();
 
 	if (!prospectId) {

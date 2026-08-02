@@ -1,8 +1,13 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { parseCsv, importProspects } from '$lib/server/ingest.js';
+import { requireAuth } from '$lib/server/auth-guard.js';
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async (event) => {
+	const denied = await requireAuth(event);
+	if (denied) return denied;
+
+	const { request } = event;
 	const contentType = request.headers.get('content-type') ?? '';
 
 	let csvText: string;
