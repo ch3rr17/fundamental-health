@@ -14,6 +14,8 @@
 	let unassignedSearchQuery = $state('');
 	const segmentFilter = new SvelteSet<TalkTrackSegment>();
 	const statusFilter = new SvelteSet<ProspectStatus>();
+	let recheckLoading = $state(false);
+	let recheckResult = $state<{ checked: number; cleared: number } | null>(null);
 	let segmentPanelOpen = $state(false);
 	let statusPanelOpen = $state(false);
 	let segmentWrapperEl = $state<HTMLElement | undefined>();
@@ -158,6 +160,22 @@
 		if (status === 'approved' || status === 'pushed') return 'bg-amber/20 text-amber';
 		if (status === 'draft-ready') return 'bg-navy/10 text-navy';
 		return 'bg-cream-dim text-ink/70';
+	}
+
+	async function recheckKlaviyo() {
+		recheckLoading = true;
+		recheckResult = null;
+		try {
+			const res = await fetch('/api/prospects/recheck', { method: 'POST' });
+			if (res.ok) {
+				recheckResult = await res.json();
+				if (recheckResult && recheckResult.cleared > 0) {
+					window.location.reload();
+				}
+			}
+		} finally {
+			recheckLoading = false;
+		}
 	}
 
 	function openProspect(id: string) {
@@ -348,7 +366,7 @@
 							class="cursor-pointer border-t border-cream-dim hover:bg-gray-100"
 						>
 							<td class="px-5 py-4 text-xs text-ink/70">
-								{p.source === 'apollo' ? 'Apollo' : 'CSV'}
+								{p.source === 'apollo' ? 'Apollo' : 'CSV'}{p.sourceListName ? ` · ${p.sourceListName}` : ''}
 							</td>
 							<td class="px-5 py-4">
 								<div class="font-bold text-ink">{p.firstName} {p.lastName}</div>
@@ -408,23 +426,37 @@
 			{/if}
 		</div>
 	{:else if tab === 'already-contacted'}
-		<div class="relative mt-6">
-			<input
-				type="text"
-				bind:value={contactedSearchQuery}
-				placeholder="Search prospects…"
-				class="w-full rounded-md border border-cream-dim bg-white px-3 py-2 pr-8 text-sm text-ink placeholder:text-ink/40"
-			/>
-			{#if contactedSearchQuery}
-				<button
-					onclick={() => (contactedSearchQuery = '')}
-					aria-label="Clear search"
-					class="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer text-ink/40 hover:text-ink"
-				>
-					×
-				</button>
-			{/if}
+		<div class="mt-6 flex items-center gap-3">
+			<div class="relative flex-1">
+				<input
+					type="text"
+					bind:value={contactedSearchQuery}
+					placeholder="Search prospects…"
+					class="w-full rounded-md border border-cream-dim bg-white px-3 py-2 pr-8 text-sm text-ink placeholder:text-ink/40"
+				/>
+				{#if contactedSearchQuery}
+					<button
+						onclick={() => (contactedSearchQuery = '')}
+						aria-label="Clear search"
+						class="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer text-ink/40 hover:text-ink"
+					>
+						×
+					</button>
+				{/if}
+			</div>
+			<button
+				onclick={recheckKlaviyo}
+				disabled={recheckLoading}
+				class="shrink-0 cursor-pointer rounded-md border border-periwinkle-dark px-4 py-2 text-sm font-bold text-periwinkle-dark hover:bg-periwinkle-dark hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+			>
+				{recheckLoading ? 'Checking…' : 'Recheck Klaviyo'}
+			</button>
 		</div>
+		{#if recheckResult}
+			<p class="mt-2 text-xs text-ink/60">
+				Checked {recheckResult.checked} prospects — {recheckResult.cleared} cleared and moved back to review.
+			</p>
+		{/if}
 
 		<div class="mt-6 overflow-x-auto rounded-md border border-cream-dim bg-white">
 			<table class="w-full text-sm">
@@ -445,7 +477,7 @@
 							class="cursor-pointer border-t border-cream-dim hover:bg-gray-100"
 						>
 							<td class="px-5 py-4 text-xs text-ink/70">
-								{p.source === 'apollo' ? 'Apollo' : 'CSV'}
+								{p.source === 'apollo' ? 'Apollo' : 'CSV'}{p.sourceListName ? ` · ${p.sourceListName}` : ''}
 							</td>
 							<td class="px-5 py-4">
 								<div class="font-bold text-ink">{p.firstName} {p.lastName}</div>
@@ -546,7 +578,7 @@
 							class="cursor-pointer border-t border-cream-dim hover:bg-gray-100"
 						>
 							<td class="px-5 py-4 text-xs text-ink/70">
-								{p.source === 'apollo' ? 'Apollo' : 'CSV'}
+								{p.source === 'apollo' ? 'Apollo' : 'CSV'}{p.sourceListName ? ` · ${p.sourceListName}` : ''}
 							</td>
 							<td class="px-5 py-4">
 								<div class="font-bold text-ink">{p.firstName} {p.lastName}</div>

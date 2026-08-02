@@ -8,14 +8,14 @@ export const POST: RequestHandler = async (event) => {
 	const denied = await requireAuth(event);
 	if (denied) return denied;
 
-	const { labelId } = await event.request.json();
+	const { labelId, labelName } = await event.request.json();
 
 	if (!labelId) {
 		return json({ error: 'labelId is required' }, { status: 400 });
 	}
 
 	try {
-		const results = await importFromApollo(labelId);
+		const results = await importFromApollo(labelId, labelName);
 		return json(results, { status: 201 });
 	} catch (e) {
 		const message = e instanceof Error ? e.message : 'Failed to import from Apollo';
