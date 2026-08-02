@@ -45,7 +45,7 @@ export function assignSegment(signals: ProspectSignals): SegmentResult {
 	}
 
 	// Below threshold — needs manual tag
-	return { segment: 'unassigned', confidence: 0.3, reason: 'No strong segment signal found — needs manual tag' };
+	return { segment: 'unassigned', confidence: 0.3, reason: 'No strong segment signal found - needs manual tag' };
 }
 
 function matchesAny(text: string, keywords: string[]): boolean {

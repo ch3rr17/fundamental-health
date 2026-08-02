@@ -1,11 +1,11 @@
 import type { ProspectStatus, TalkTrackSegment } from './types';
 
 export const SEGMENT_LABELS: Record<TalkTrackSegment, string> = {
-	'community-donors': 'Community donors',
-	'nonprofit-marketing': 'Nonprofit / marketing',
-	'board-prospects': 'Board prospects',
+	'community-donors': 'Community Donors',
+	'nonprofit-marketing': 'Nonprofit / Marketing',
+	'board-prospects': 'Board Prospects',
 	'financial-cra': 'Financial / CRA',
-	'daf-giving-circles': 'DAF advisors'
+	'daf-giving-circles': 'DAF Advisors'
 };
 
 export const SEGMENT_ORDER: TalkTrackSegment[] = [
@@ -17,7 +17,7 @@ export const SEGMENT_ORDER: TalkTrackSegment[] = [
 ];
 
 export const STATUS_LABELS: Record<ProspectStatus, string> = {
-	imported: 'Ready for research',
+	imported: 'Ready For Research',
 	'already-contacted': 'Previously Contacted',
 	'needs-review': 'Needs review',
 	'draft-ready': 'Email drafted',

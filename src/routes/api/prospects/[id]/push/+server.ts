@@ -25,7 +25,7 @@ export const POST: RequestHandler = async (event) => {
 	// Human-in-the-loop gate: only approved prospects can be pushed
 	if (prospect.status !== 'approved') {
 		return json(
-			{ error: `Prospect status is "${prospect.status}" — must be "approved" before push` },
+			{ error: `Prospect status is "${prospect.status}" - must be "approved" before push` },
 			{ status: 400 }
 		);
 	}
@@ -82,7 +82,7 @@ export const POST: RequestHandler = async (event) => {
 	// Timeout — pushed but send unconfirmed
 	return json({
 		status: 'pushed',
-		message: 'Pushed, send unconfirmed — check Klaviyo',
+		message: 'Pushed, send unconfirmed - check Klaviyo',
 		profileId: pushResult.profileId,
 		listId: pushResult.listId
 	});

@@ -140,6 +140,17 @@
 		if (!statusWrapperEl?.contains(target)) statusPanelOpen = false;
 	}
 
+	const LIST_NAME_MAX = 24;
+
+	function listName(name: string | null) {
+		if (!name) return '';
+		return name.length > LIST_NAME_MAX ? ` · ${name.slice(0, LIST_NAME_MAX).trimEnd()}…` : ` · ${name}`;
+	}
+
+	function listNameTitle(name: string | null) {
+		return name && name.length > LIST_NAME_MAX ? name : undefined;
+	}
+
 	function segmentLabel(seg: string) {
 		if (seg === 'unassigned') return 'Unassigned';
 		return SEGMENT_LABELS[seg as TalkTrackSegment] ?? seg;
@@ -187,7 +198,7 @@
 
 <svelte:window onclick={closePanels} />
 
-<div class="mx-auto max-w-5xl px-8 py-16">
+<div class="mx-auto max-w-7xl px-8 py-16">
 	<div class="flex items-center justify-between">
 		<h1 class="text-2xl font-bold text-navy">Prospects</h1>
 		<a
@@ -350,11 +361,11 @@
 		</div>
 
 		<div class="mt-6 overflow-x-auto rounded-md border border-cream-dim bg-white">
-			<table class="w-full text-sm">
+			<table class="w-full text-sm whitespace-nowrap">
 				<thead>
 					<tr class="bg-cream-soft text-left text-xs tracking-wide text-ink/60 uppercase">
 						<th class="px-5 py-3 font-bold">List</th>
-						<th class="px-5 py-3 font-bold">Prospect</th>
+						<th class="px-5 py-3 font-bold">Name</th>
 						<th class="px-5 py-3 font-bold">Segment</th>
 						<th class="px-5 py-3 font-bold">Match</th>
 						<th class="px-5 py-3 font-bold">Status</th>
@@ -367,8 +378,8 @@
 							onclick={() => openProspect(p.id)}
 							class="cursor-pointer border-t border-cream-dim hover:bg-gray-100"
 						>
-							<td class="px-5 py-4 text-xs text-ink/70">
-								{p.source === 'apollo' ? 'Apollo' : 'CSV'}{p.sourceListName ? ` · ${p.sourceListName}` : ''}
+							<td class="px-5 py-4 text-xs text-ink/70" title={listNameTitle(p.sourceListName)}>
+								{p.source === 'apollo' ? 'Apollo' : 'CSV'}{listName(p.sourceListName)}
 							</td>
 							<td class="px-5 py-4">
 								<div class="font-bold text-ink">{p.firstName} {p.lastName}</div>
@@ -456,16 +467,16 @@
 		</div>
 		{#if recheckResult}
 			<p class="mt-2 text-xs text-ink/60">
-				Checked {recheckResult.checked} prospects — {recheckResult.cleared} cleared and moved back to review.
+				Checked {recheckResult.checked} prospects - {recheckResult.cleared} cleared and moved back to review.
 			</p>
 		{/if}
 
 		<div class="mt-6 overflow-x-auto rounded-md border border-cream-dim bg-white">
-			<table class="w-full text-sm">
+			<table class="w-full text-sm whitespace-nowrap">
 				<thead>
 					<tr class="bg-cream-soft text-left text-xs tracking-wide text-ink/60 uppercase">
 						<th class="px-5 py-3 font-bold">List</th>
-						<th class="px-5 py-3 font-bold">Prospect</th>
+						<th class="px-5 py-3 font-bold">Name</th>
 						<th class="px-5 py-3 font-bold">Segment</th>
 						<th class="px-5 py-3 font-bold">Match</th>
 						<th class="px-5 py-3 font-bold">Status</th>
@@ -478,8 +489,8 @@
 							onclick={() => openProspect(p.id)}
 							class="cursor-pointer border-t border-cream-dim hover:bg-gray-100"
 						>
-							<td class="px-5 py-4 text-xs text-ink/70">
-								{p.source === 'apollo' ? 'Apollo' : 'CSV'}{p.sourceListName ? ` · ${p.sourceListName}` : ''}
+							<td class="px-5 py-4 text-xs text-ink/70" title={listNameTitle(p.sourceListName)}>
+								{p.source === 'apollo' ? 'Apollo' : 'CSV'}{listName(p.sourceListName)}
 							</td>
 							<td class="px-5 py-4">
 								<div class="font-bold text-ink">{p.firstName} {p.lastName}</div>
@@ -562,11 +573,11 @@
 		</div>
 
 		<div class="mt-6 overflow-x-auto rounded-md border border-cream-dim bg-white">
-			<table class="w-full text-sm">
+			<table class="w-full text-sm whitespace-nowrap">
 				<thead>
 					<tr class="bg-cream-soft text-left text-xs tracking-wide text-ink/60 uppercase">
 						<th class="px-5 py-3 font-bold">List</th>
-						<th class="px-5 py-3 font-bold">Prospect</th>
+						<th class="px-5 py-3 font-bold">Name</th>
 						<th class="px-5 py-3 font-bold">Segment</th>
 						<th class="px-5 py-3 font-bold">Match</th>
 						<th class="px-5 py-3 font-bold">Status</th>
@@ -579,8 +590,8 @@
 							onclick={() => openProspect(p.id)}
 							class="cursor-pointer border-t border-cream-dim hover:bg-gray-100"
 						>
-							<td class="px-5 py-4 text-xs text-ink/70">
-								{p.source === 'apollo' ? 'Apollo' : 'CSV'}{p.sourceListName ? ` · ${p.sourceListName}` : ''}
+							<td class="px-5 py-4 text-xs text-ink/70" title={listNameTitle(p.sourceListName)}>
+								{p.source === 'apollo' ? 'Apollo' : 'CSV'}{listName(p.sourceListName)}
 							</td>
 							<td class="px-5 py-4">
 								<div class="font-bold text-ink">{p.firstName} {p.lastName}</div>
