@@ -124,7 +124,7 @@
 	<div class="mt-6 flex gap-2">
 		<button
 			onclick={() => selectSource('apollo')}
-			class="flex-1 cursor-pointer rounded-md border px-4 py-2 text-sm font-bold {source === 'apollo'
+			class="flex-1 cursor-pointer rounded-md border px-3 py-2 text-xs font-bold {source === 'apollo'
 				? 'border-coral text-coral'
 				: 'border-cream-dim text-ink/60'}"
 		>
@@ -132,7 +132,7 @@
 		</button>
 		<button
 			onclick={() => selectSource('csv')}
-			class="flex-1 cursor-pointer rounded-md border px-4 py-2 text-sm font-bold {source === 'csv'
+			class="flex-1 cursor-pointer rounded-md border px-3 py-2 text-xs font-bold {source === 'csv'
 				? 'border-coral text-coral'
 				: 'border-cream-dim text-ink/60'}"
 		>
@@ -165,7 +165,7 @@
 					<button
 						onclick={submitApolloPull}
 						disabled={!selectedListId || loading}
-						class="mt-6 w-full cursor-pointer rounded-md bg-linear-to-r from-coral to-amber px-4 py-3 text-sm font-bold tracking-wide text-white uppercase transition-colors duration-300 ease-in-out hover:from-coral hover:to-coral disabled:cursor-not-allowed disabled:opacity-50"
+						class="mt-6 w-full cursor-pointer rounded-md bg-linear-to-r from-coral to-amber px-3 py-2 text-xs font-bold tracking-wide text-white uppercase transition-colors duration-300 ease-in-out hover:from-coral hover:to-coral disabled:cursor-not-allowed disabled:opacity-50"
 					>
 						{loading ? 'Importing…' : 'Import List'}
 					</button>
@@ -185,7 +185,7 @@
 				<button
 					onclick={submitCsv}
 					disabled={!file || loading}
-					class="mt-6 w-full cursor-pointer rounded-md bg-linear-to-r from-coral to-amber px-4 py-3 text-sm font-bold tracking-wide text-white uppercase transition-colors duration-300 ease-in-out hover:from-coral hover:to-coral disabled:cursor-not-allowed disabled:opacity-50"
+					class="mt-6 w-full cursor-pointer rounded-md bg-linear-to-r from-coral to-amber px-3 py-2 text-xs font-bold tracking-wide text-white uppercase transition-colors duration-300 ease-in-out hover:from-coral hover:to-coral disabled:cursor-not-allowed disabled:opacity-50"
 				>
 					{loading ? 'Importing…' : 'Import CSV'}
 				</button>
@@ -201,7 +201,7 @@
 		{#if result}
 			<a
 				href={resolve('/prospects')}
-				class="mt-6 inline-block rounded-md border border-coral px-4 py-3 text-sm font-bold tracking-wide text-coral uppercase hover:bg-coral hover:text-white"
+				class="mt-6 inline-block rounded-md border border-coral px-3 py-2 text-xs font-bold tracking-wide text-coral uppercase hover:bg-coral hover:text-white"
 			>
 				Go to Prospects
 			</a>

@@ -199,7 +199,7 @@
 				<button
 					onclick={reapproach}
 					disabled={busy}
-					class="cursor-pointer rounded-md bg-linear-to-r from-coral to-amber px-4 py-2 text-sm font-bold tracking-wide text-white uppercase disabled:cursor-not-allowed disabled:opacity-50"
+					class="cursor-pointer rounded-md bg-linear-to-r from-coral to-amber px-3 py-2 text-xs font-bold tracking-wide text-white uppercase disabled:cursor-not-allowed disabled:opacity-50"
 				>
 				{busy ? 'Re-approaching…' : 'Research and Draft Email'}
 			</button>
@@ -258,7 +258,7 @@
 				<button
 					onclick={assignSegmentManually}
 					disabled={busy}
-					class="cursor-pointer rounded-md bg-linear-to-r from-coral to-amber px-4 py-2 text-sm font-bold tracking-wide text-white uppercase disabled:cursor-not-allowed disabled:opacity-50"
+					class="cursor-pointer rounded-md bg-linear-to-r from-coral to-amber px-3 py-2 text-xs font-bold tracking-wide text-white uppercase disabled:cursor-not-allowed disabled:opacity-50"
 				>
 				Research and Draft Email
 			</button>
@@ -308,7 +308,7 @@
 				<button
 					onclick={generateDraft}
 					disabled={busy}
-					class="cursor-pointer rounded-md bg-linear-to-r from-coral to-amber px-4 py-2 text-sm font-bold tracking-wide text-white uppercase disabled:cursor-not-allowed disabled:opacity-50"
+					class="cursor-pointer rounded-md bg-linear-to-r from-coral to-amber px-3 py-2 text-xs font-bold tracking-wide text-white uppercase disabled:cursor-not-allowed disabled:opacity-50"
 				>
 				{busy ? 'Researching…' : 'Research and Draft Email'}
 			</button>
@@ -397,14 +397,14 @@
 					<div class="flex justify-end gap-2 border-t border-cream-dim px-4 py-3">
 						<button
 							onclick={() => (editing = false)}
-							class="cursor-pointer rounded-md border border-cream-dim px-4 py-2 text-sm font-bold text-ink/70"
+							class="cursor-pointer rounded-md border border-cream-dim px-3 py-2 text-xs font-bold text-ink/70"
 						>
 							Cancel
 						</button>
 						<button
 							onclick={saveEdit}
 							disabled={busy}
-							class="cursor-pointer rounded-md bg-linear-to-r from-coral to-amber px-4 py-2 text-sm font-bold tracking-wide text-white uppercase disabled:cursor-not-allowed disabled:opacity-50"
+							class="cursor-pointer rounded-md bg-linear-to-r from-coral to-amber px-3 py-2 text-xs font-bold tracking-wide text-white uppercase disabled:cursor-not-allowed disabled:opacity-50"
 						>
 							Save
 						</button>
@@ -431,7 +431,7 @@
 				{#if !busy}
 					<button
 						onclick={startEdit}
-						class="cursor-pointer rounded-md border border-cream-dim px-4 py-3 text-sm font-bold text-ink/70"
+						class="cursor-pointer rounded-md border border-cream-dim px-3 py-2 text-xs font-bold text-ink/70"
 					>
 						Edit Email
 					</button>
@@ -439,7 +439,7 @@
 				<button
 					onclick={approveAndPush}
 					disabled={busy}
-					class="cursor-pointer rounded-md bg-linear-to-r from-coral to-amber px-5 py-3 text-sm font-bold tracking-wide text-white uppercase disabled:cursor-not-allowed disabled:opacity-50"
+					class="cursor-pointer rounded-md bg-linear-to-r from-coral to-amber px-3 py-2 text-xs font-bold tracking-wide text-white uppercase disabled:cursor-not-allowed disabled:opacity-50"
 				>
 					{busy ? 'Confirming send…' : 'Approve and Send'}
 				</button>

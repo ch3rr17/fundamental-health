@@ -24,7 +24,7 @@
 
 		<a
 			href={resolve('/signin')}
-			class="mt-8 inline-block w-full rounded-md bg-linear-to-r from-coral to-amber px-4 py-3 text-center text-sm font-bold tracking-wide text-white uppercase transition-colors duration-300 ease-in-out hover:from-coral hover:to-coral"
+			class="mt-8 inline-block w-full rounded-md bg-linear-to-r from-coral to-amber px-3 py-2 text-center text-xs font-bold tracking-wide text-white uppercase transition-colors duration-300 ease-in-out hover:from-coral hover:to-coral"
 		>
 			Sign in
 		</a>
