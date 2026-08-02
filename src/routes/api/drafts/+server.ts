@@ -15,7 +15,11 @@ export const POST: RequestHandler = async (event) => {
 		return json({ error: 'prospectId is required' }, { status: 400 });
 	}
 
-	const senderName = auth.session.user.name ?? undefined;
+	// Prefer given/family name (split out from the raw Google profile in auth.ts) over
+	// the combined display name, since some Google accounts pad `name` with extra text.
+	const { givenName, familyName, name } = auth.session.user;
+	const fullName = [givenName, familyName].filter(Boolean).join(' ');
+	const senderName = fullName || name || undefined;
 
 	try {
 		const draft = await generateDraft(prospectId, senderName);
