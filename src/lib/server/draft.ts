@@ -47,18 +47,11 @@ export function stripDashes(input: string): string {
 	// Digit ranges ("2020–2026", "10 – 15") read fine as a plain hyphen with no spaces.
 	text = text.replace(/(\d)\s*[–—]\s*(\d)/g, '$1-$2');
 
-	// A dash pair enclosing a clause is a parenthetical aside — commas do the same job.
-	text = text.replace(/ [–—] ([^–—]+?) [–—] /g, ', $1, ');
-
-	// A lone dash flanked by spaces is usually a sentence break used for emphasis. Split
-	// it into two sentences when enough precedes it to stand alone; otherwise it's just a pause.
-	text = text.replace(/([^.!?]*) [–—] (\w)/g, (_match, before: string, next: string) => {
-		const wordCount = before.trim().split(/\s+/).filter(Boolean).length;
-		return wordCount >= 4 ? `${before.trim()}. ${next.toUpperCase()}` : `${before.trim()}, ${next}`;
-	});
-
-	// Whatever's left (no clean surrounding spaces to reason about) just becomes a hyphen.
-	text = text.replace(/[–—]/g, '-');
+	// Everywhere else, a dash is standing in for a comma — setting off a clause, an
+	// aside, or an appositive. That holds whether the source spaced it ("word — word")
+	// or not ("word—word"); both read the same. A comma is grammatically safe in every
+	// one of those cases, unlike a period, which can turn a noun phrase into a fragment.
+	text = text.replace(/\s*[–—]\s*/g, ', ');
 
 	return text;
 }
