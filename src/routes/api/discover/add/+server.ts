@@ -31,7 +31,9 @@ export const POST: RequestHandler = async (event) => {
 		const mm = String(now.getMonth() + 1).padStart(2, '0');
 		const dd = String(now.getDate()).padStart(2, '0');
 		const yyyy = now.getFullYear();
-		labelName = `prospect-${mm}-${dd}-${yyyy}`;
+		const hh = String(now.getHours()).padStart(2, '0');
+		const min = String(now.getMinutes()).padStart(2, '0');
+		labelName = `prospect-${mm}-${dd}-${yyyy} ${hh}:${min}`;
 		labelId = await createLabel(labelName);
 	}
 
