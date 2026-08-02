@@ -392,8 +392,7 @@
 					/>
 					<textarea
 						bind:value={editBody}
-						rows="8"
-						class="w-full px-4 py-3 text-sm text-ink"
+						class="field-sizing-content w-full resize-y px-4 py-3 text-sm text-ink"
 					></textarea>
 					<div class="flex justify-end gap-2 border-t border-cream-dim px-4 py-3">
 						<button
