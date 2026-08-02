@@ -67,7 +67,7 @@ describe('POST /api/prospects/[id]/push', () => {
 
 		expect(res.status).toBe(400);
 		expect(await res.json()).toEqual({
-			error: 'Prospect status is "imported" — must be "approved" before push'
+			error: 'Prospect status is "imported" - must be "approved" before push'
 		});
 	});
 
@@ -168,7 +168,7 @@ describe('POST /api/prospects/[id]/push', () => {
 		expect(res.status).toBe(200);
 		expect(await res.json()).toEqual({
 			status: 'pushed',
-			message: 'Pushed, send unconfirmed — check Klaviyo',
+			message: 'Pushed, send unconfirmed - check Klaviyo',
 			profileId: 'p1',
 			listId: 'l1'
 		});

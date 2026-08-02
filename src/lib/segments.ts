@@ -1,11 +1,11 @@
 import type { ProspectStatus, TalkTrackSegment } from './types';
 
 export const SEGMENT_LABELS: Record<TalkTrackSegment, string> = {
-	'community-donors': 'Community donors',
-	'nonprofit-marketing': 'Nonprofit / marketing',
-	'board-prospects': 'Board prospects',
+	'community-donors': 'Community Donors',
+	'nonprofit-marketing': 'Nonprofit / Marketing',
+	'board-prospects': 'Board Prospects',
 	'financial-cra': 'Financial / CRA',
-	'daf-giving-circles': 'DAF advisors'
+	'daf-giving-circles': 'DAF Advisors'
 };
 
 export const SEGMENT_ORDER: TalkTrackSegment[] = [
@@ -17,14 +17,14 @@ export const SEGMENT_ORDER: TalkTrackSegment[] = [
 ];
 
 export const STATUS_LABELS: Record<ProspectStatus, string> = {
-	imported: 'Ready for research',
+	imported: 'Ready For Research',
 	'already-contacted': 'Previously Contacted',
-	'needs-review': 'Needs review',
-	'draft-ready': 'Email drafted',
-	approved: 'Approved — ready to push',
-	pushed: 'Pushed — unconfirmed',
-	'send-confirmed': 'Send confirmed',
-	logged: 'Synced to Monday.com'
+	'needs-review': 'Needs Review',
+	'draft-ready': 'Email Drafted',
+	approved: 'Approved - Ready To Push',
+	pushed: 'Pushed - Unconfirmed',
+	'send-confirmed': 'Send Confirmed',
+	logged: 'Synced To Monday.com'
 };
 
 export const QUEUE_STATUSES: ProspectStatus[] = [

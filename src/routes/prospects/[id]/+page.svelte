@@ -422,7 +422,7 @@
 					? 'bg-sky text-periwinkle-dark'
 					: 'bg-amber/20 text-amber'}"
 			>
-				{pushResult.status === 'send-confirmed' ? 'Sent — confirmed.' : (pushResult.message ?? 'Pushed, send unconfirmed — check Klaviyo.')}
+				{pushResult.status === 'send-confirmed' ? 'Sent - confirmed.' : (pushResult.message ?? 'Pushed, send unconfirmed - check Klaviyo.')}
 			</div>
 		{/if}
 
@@ -446,7 +446,7 @@
 			</div>
 		{:else if draft.approved}
 			<p class="mt-4 text-right text-xs font-bold text-ink/50">
-				Approved{prospect.status ? ` — ${STATUS_LABELS[prospect.status]}` : ''}
+				Approved{prospect.status ? ` - ${STATUS_LABELS[prospect.status]}` : ''}
 			</p>
 		{/if}
 	{/if}

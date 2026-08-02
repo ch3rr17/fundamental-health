@@ -43,7 +43,7 @@
 				if (data[0]) selectedListId = data[0].id;
 			}
 		} catch {
-			apolloListsError = 'Failed to load Apollo lists — check your connection and try again.';
+			apolloListsError = 'Failed to load Apollo lists - check your connection and try again.';
 		} finally {
 			apolloListsLoading = false;
 		}
@@ -78,7 +78,7 @@
 				result = data;
 			}
 		} catch {
-			error = 'Import failed — check your connection and try again.';
+			error = 'Import failed - check your connection and try again.';
 		} finally {
 			loading = false;
 		}
@@ -104,7 +104,7 @@
 				result = data;
 			}
 		} catch {
-			error = 'Pull failed — check your connection and try again.';
+			error = 'Pull failed - check your connection and try again.';
 		} finally {
 			loading = false;
 		}

@@ -70,7 +70,7 @@ export async function generateDraft(prospectId: string) {
 
 	if (p.segment === 'unassigned') {
 		throw new Error(
-			'Cannot generate draft for unassigned segment — assign a talk-track segment first'
+			'Cannot generate draft for unassigned segment - assign a talk-track segment first'
 		);
 	}
 
