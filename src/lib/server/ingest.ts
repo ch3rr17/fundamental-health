@@ -19,7 +19,17 @@ export function parseCsv(raw: string): CsvRow[] {
 	const lines = raw.trim().split('\n');
 	if (lines.length < 2) return [];
 
-	const headers = parseCsvLine(lines[0]).map((h) => h.trim().toLowerCase().replace(/\s+/g, '_'));
+	const HEADER_ALIASES: Record<string, string> = {
+		company_name: 'organization',
+		company: 'organization',
+		person_linkedin_url: 'linkedin_url',
+		linkedin: 'linkedin_url',
+		city: 'location'
+	};
+	const headers = parseCsvLine(lines[0]).map((h) => {
+		const normalized = h.trim().toLowerCase().replace(/\s+/g, '_');
+		return HEADER_ALIASES[normalized] ?? normalized;
+	});
 	const rows: CsvRow[] = [];
 
 	for (let i = 1; i < lines.length; i++) {
