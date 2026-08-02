@@ -24,3 +24,4 @@ vite.config.ts.timestamp-*
 
 # Apollo CSV
 *.csv
+!docs/supporters/fixtures/manual-qa-prompt-injection.csv
