@@ -31,6 +31,8 @@ export interface Prospect {
 	linkedinUrl: string | null;
 	location: string | null;
 	source: 'apollo' | 'csv';
+	sourceListId: string | null;
+	sourceListName: string | null;
 	segment: SegmentAssignment;
 	segmentConfidence: number | null;
 	status: ProspectStatus;

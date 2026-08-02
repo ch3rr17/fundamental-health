@@ -89,7 +89,7 @@ export async function fetchLists() {
 }
 
 /** Pull contacts from an Apollo list and import them into the database. */
-export async function importFromApollo(labelId: string) {
+export async function importFromApollo(labelId: string, labelName?: string) {
 	const contacts = await fetchListContacts(labelId);
 	const results = { imported: 0, alreadyContacted: 0, total: contacts.length };
 
@@ -129,6 +129,8 @@ export async function importFromApollo(labelId: string) {
 			linkedinUrl: contact.linkedin_url || null,
 			location,
 			source: 'apollo',
+			sourceListId: labelId,
+			sourceListName: labelName || null,
 			segment,
 			segmentConfidence,
 			status,

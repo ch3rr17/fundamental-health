@@ -91,10 +91,11 @@
 		result = null;
 
 		try {
+			const selectedList = apolloLists.find((l) => l.id === selectedListId);
 			const res = await fetch('/api/apollo/pull', {
 				method: 'POST',
 				headers: { 'content-type': 'application/json' },
-				body: JSON.stringify({ labelId: selectedListId })
+				body: JSON.stringify({ labelId: selectedListId, labelName: selectedList?.name ?? '' })
 			});
 			const data = await res.json();
 			if (!res.ok) {

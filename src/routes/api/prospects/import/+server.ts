@@ -11,6 +11,7 @@ export const POST: RequestHandler = async (event) => {
 	const contentType = request.headers.get('content-type') ?? '';
 
 	let csvText: string;
+	let listName: string | null = null;
 
 	if (contentType.includes('multipart/form-data')) {
 		const formData = await request.formData();
@@ -19,6 +20,7 @@ export const POST: RequestHandler = async (event) => {
 			return json({ error: 'No file provided' }, { status: 400 });
 		}
 		csvText = await file.text();
+		listName = file.name.replace(/\.csv$/i, '') || null;
 	} else {
 		csvText = await request.text();
 	}
@@ -32,6 +34,6 @@ export const POST: RequestHandler = async (event) => {
 		return json({ error: 'No valid rows found in CSV. Required columns: first_name, last_name' }, { status: 400 });
 	}
 
-	const results = await importProspects(rows);
+	const results = await importProspects(rows, listName);
 	return json(results, { status: 201 });
 };

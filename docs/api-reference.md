@@ -109,6 +109,14 @@ Update a prospect. Used for manual segment assignment or status changes.
 { "status": "imported" }
 ```
 
+### `POST /api/prospects/recheck`
+Re-runs Klaviyo dedup on all "already-contacted" prospects. Any that are no longer found in Klaviyo get moved back to `imported` with a fresh segment assignment.
+
+**Response:**
+```json
+{ "checked": 3, "cleared": 1, "stillContacted": 2 }
+```
+
 ---
 
 ## Drafts

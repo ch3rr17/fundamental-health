@@ -10,6 +10,8 @@ export const prospects = pgTable('prospects', {
 	linkedinUrl: text('linkedin_url'),
 	location: text('location'),
 	source: text('source', { enum: ['apollo', 'csv'] }).notNull(),
+	sourceListId: text('source_list_id'),
+	sourceListName: text('source_list_name'),
 	segment: text('segment', {
 		enum: [
 			'community-donors',

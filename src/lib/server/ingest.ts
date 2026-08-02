@@ -75,7 +75,7 @@ function parseCsvLine(line: string): string[] {
 }
 
 /** Import parsed CSV rows: dedup check, segment assignment, insert into DB. */
-export async function importProspects(rows: CsvRow[]) {
+export async function importProspects(rows: CsvRow[], listName?: string | null) {
 	const results = { imported: 0, alreadyContacted: 0, total: rows.length };
 
 	for (const row of rows) {
@@ -105,6 +105,7 @@ export async function importProspects(rows: CsvRow[]) {
 			linkedinUrl: row.linkedin_url || null,
 			location: row.location || null,
 			source: 'csv',
+			sourceListName: listName || null,
 			segment,
 			segmentConfidence,
 			status,
