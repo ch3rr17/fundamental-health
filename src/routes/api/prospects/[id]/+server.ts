@@ -4,6 +4,7 @@ import { db } from '$lib/server/db.js';
 import { prospects } from '$lib/server/schema.js';
 import { eq } from 'drizzle-orm';
 import { requireAuth } from '$lib/server/auth-guard.js';
+import { needsReviewMessage } from '$lib/server/needs-review.js';
 
 export const GET: RequestHandler = async (event) => {
 	const denied = await requireAuth(event);
@@ -25,6 +26,20 @@ export const PATCH: RequestHandler = async (event) => {
 
 	const { params, request } = event;
 	const body = await request.json();
+
+	// Guard against silently clearing a needs-review flag (e.g. a possible prompt
+	// injection attempt in the imported data) through this general-purpose endpoint -
+	// the same explicit acknowledgment required by the drafts approval gate
+	// (src/routes/api/drafts/[id]/+server.ts) applies to any status change here too.
+	if ('status' in body && body.status !== 'needs-review' && body.acknowledgeReview !== true) {
+		const [current] = await db.select().from(prospects).where(eq(prospects.id, params.id));
+		if (current?.status === 'needs-review') {
+			return json(
+				{ error: needsReviewMessage('changing its status'), needsReviewAcknowledgement: true },
+				{ status: 409 }
+			);
+		}
+	}
 
 	const allowedFields = ['segment', 'segmentConfidence', 'status', 'priorTalkTrack'] as const;
 	const updates: Record<string, unknown> = { updatedAt: new Date().toISOString() };

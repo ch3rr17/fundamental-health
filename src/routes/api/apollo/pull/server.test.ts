@@ -52,6 +52,15 @@ describe('POST /api/apollo/pull', () => {
 
 		expect(res.status).toBe(201);
 		expect(await res.json()).toEqual({ imported: 3, alreadyContacted: 1, total: 4 });
-		expect(importFromApolloMock).toHaveBeenCalledWith('l1');
+		expect(importFromApolloMock).toHaveBeenCalledWith('l1', undefined);
+	});
+
+	it('passes labelName through to importFromApollo when provided', async () => {
+		importFromApolloMock.mockResolvedValue({ imported: 1, alreadyContacted: 0, total: 1 });
+
+		const res = await POST(makeEvent({ body: { labelId: 'l1', labelName: 'Board Prospects' } }));
+
+		expect(res.status).toBe(201);
+		expect(importFromApolloMock).toHaveBeenCalledWith('l1', 'Board Prospects');
 	});
 });

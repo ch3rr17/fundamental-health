@@ -26,6 +26,7 @@
 		"postgres": "^3.4.5"
 	},
 	"devDependencies": {
+		"@auth/core": "0.41.3",
 		"@eslint/js": "^10.0.1",
 		"@sveltejs/adapter-auto": "^7.0.1",
 		"@sveltejs/kit": "^2.63.0",
