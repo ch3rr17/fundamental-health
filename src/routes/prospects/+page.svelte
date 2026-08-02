@@ -198,12 +198,12 @@
 
 <svelte:window onclick={closePanels} />
 
-<div class="mx-auto max-w-7xl px-8 py-16">
+<div class="mx-auto max-w-6xl px-8 py-16">
 	<div class="flex items-center justify-between">
 		<h1 class="text-2xl font-bold text-navy">Prospects</h1>
 		<a
 			href={resolve('/import')}
-			class="rounded-md bg-linear-to-r from-coral to-amber px-4 py-3 text-sm font-bold tracking-wide text-white uppercase hover:from-coral hover:to-coral"
+			class="rounded-md bg-linear-to-r from-coral to-amber px-3 py-2 text-xs font-bold tracking-wide text-white uppercase hover:from-coral hover:to-coral"
 		>
 			+ Import Prospects
 		</a>
