@@ -37,14 +37,21 @@ interface PushResult {
 }
 
 /** Create or update a Klaviyo profile. Returns the profile ID. */
-async function upsertProfile(prospect: {
-	email: string | null;
-	firstName: string;
-	lastName: string;
-	organization: string | null;
-	title: string | null;
-	location: string | null;
-}): Promise<string> {
+async function upsertProfile(
+	prospect: {
+		email: string | null;
+		firstName: string;
+		lastName: string;
+		organization: string | null;
+		title: string | null;
+		location: string | null;
+	},
+	draft?: {
+		subject: string;
+		body: string;
+		segment: string;
+	}
+): Promise<string> {
 	if (!prospect.email) {
 		throw new Error('Cannot push to Klaviyo without an email address');
 	}
@@ -57,6 +64,14 @@ async function upsertProfile(prospect: {
 	if (prospect.organization) attributes.organization = prospect.organization;
 	if (prospect.title) attributes.title = prospect.title;
 	if (prospect.location) attributes.location = { city: prospect.location };
+
+	if (draft) {
+		attributes.properties = {
+			draft_subject: draft.subject,
+			draft_body: draft.body,
+			talk_track_segment: draft.segment
+		};
+	}
 
 	const res = await fetch(`${BASE_URL}/profiles`, {
 		method: 'POST',
@@ -101,7 +116,7 @@ async function addToList(profileId: string, listId: string): Promise<void> {
 	}
 }
 
-/** Push a prospect to Klaviyo: create/update profile + add to segment list. */
+/** Push a prospect to Klaviyo: create/update profile with draft content + add to segment list. */
 export async function pushToKlaviyo(
 	prospect: {
 		email: string | null;
@@ -111,7 +126,12 @@ export async function pushToKlaviyo(
 		title: string | null;
 		location: string | null;
 	},
-	segment: TalkTrackSegment
+	segment: TalkTrackSegment,
+	draft?: {
+		subject: string;
+		body: string;
+		segment: string;
+	}
 ): Promise<PushResult> {
 	const listId = SEGMENT_LIST_IDS[segment];
 	if (!listId) {
@@ -124,7 +144,7 @@ export async function pushToKlaviyo(
 	}
 
 	try {
-		const profileId = await upsertProfile(prospect);
+		const profileId = await upsertProfile(prospect, draft);
 		await addToList(profileId, listId);
 		return { profileId, listId, status: 'pushed' };
 	} catch (e) {

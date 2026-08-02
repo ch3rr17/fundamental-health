@@ -46,8 +46,12 @@ export const POST: RequestHandler = async (event) => {
 
 	const segment = prospect.segment as TalkTrackSegment;
 
-	// Push to Klaviyo
-	const pushResult = await pushToKlaviyo(prospect, segment);
+	// Push to Klaviyo with draft content as custom profile properties
+	const pushResult = await pushToKlaviyo(prospect, segment, {
+		subject: draft.subject,
+		body: draft.body,
+		segment: draft.segment
+	});
 
 	if (pushResult.status === 'push-failed') {
 		return json({ error: pushResult.error, status: 'push-failed' }, { status: 502 });
