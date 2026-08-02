@@ -13,8 +13,8 @@
 
 <div class="flex min-h-[70vh] items-center justify-center px-6 py-16">
 	<div class="w-full max-w-sm rounded-lg bg-white p-10 text-center shadow-sm">
-		<a href={resolve('/')} class="inline-block">
-			<img src={logo} alt="fundamental health" class="mx-auto h-9 w-auto" />
+		<a href={resolve('/')} class="block">
+			<img src={logo} alt="fundamental health" class="h-9 w-auto" />
 		</a>
 
 		<h1 class="mt-6 text-2xl font-bold text-navy">Sign in</h1>
@@ -23,7 +23,7 @@
 		<button
 			onclick={handleSignIn}
 			disabled={loading}
-			class="mt-8 flex w-full items-center justify-center gap-3 rounded-md border border-cream-dim bg-white px-4 py-3 text-sm font-bold text-ink transition-colors duration-300 ease-in-out hover:bg-cream-soft disabled:opacity-60"
+			class="mt-8 flex w-full cursor-pointer items-center justify-center gap-3 rounded-md border border-cream-dim bg-white px-4 py-3 text-sm font-bold text-ink transition-colors duration-300 ease-in-out hover:bg-cream-soft disabled:cursor-not-allowed disabled:opacity-60"
 		>
 			<svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
 				<path

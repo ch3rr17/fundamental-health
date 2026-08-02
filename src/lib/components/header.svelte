@@ -14,17 +14,10 @@
 		{#if page.data.session}
 			<button
 				onclick={() => signOut({ redirectTo: resolve('/') })}
-				class="inline-block rounded-md bg-linear-to-r from-coral to-amber px-4 py-3 text-center text-sm font-bold tracking-wide text-white uppercase transition-colors duration-300 ease-in-out hover:from-coral hover:to-coral"
+				class="inline-block cursor-pointer rounded-md border border-coral px-4 py-3 text-center text-sm font-bold tracking-wide text-coral uppercase transition-colors duration-300 ease-in-out hover:bg-coral hover:text-white"
 			>
 				Sign out
 			</button>
-		{:else}
-			<a
-				href={resolve('/signin')}
-				class="inline-block rounded-md bg-linear-to-r from-coral to-amber px-4 py-3 text-center text-sm font-bold tracking-wide text-white uppercase transition-colors duration-300 ease-in-out hover:from-coral hover:to-coral"
-			>
-				Sign in
-			</a>
 		{/if}
 	</div>
 </header>
