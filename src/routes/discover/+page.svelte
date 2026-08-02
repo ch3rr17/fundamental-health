@@ -9,6 +9,7 @@
 		name: string;
 		role: string;
 		org: (city: string) => string;
+		email: string;
 		avatarUrl: string;
 		netWorth: string;
 		segment: TalkTrackSegment;
@@ -22,6 +23,7 @@
 	const DEMO_RESULTS: BoardProspect[] = [
 		{
 			id: 'b1',
+			email: 'patricia.whitfield@gmail.com',
 			name: 'Patricia Whitfield',
 			role: 'Board Chair',
 			org: (city) => `NAMI ${city}`,
@@ -32,6 +34,7 @@
 		},
 		{
 			id: 'b2',
+			email: 'robert.kang@outlook.com',
 			name: 'Robert Kang',
 			role: 'Treasurer',
 			org: (city) => `Mental Health America of ${city}`,
@@ -42,6 +45,7 @@
 		},
 		{
 			id: 'b3',
+			email: 'diane.castellano@gmail.com',
 			name: 'Diane Castellano',
 			role: 'Trustee',
 			org: (city) => `${city} Behavioral Health Foundation`,
@@ -52,6 +56,7 @@
 		},
 		{
 			id: 'b4',
+			email: 'steven.marsh@yahoo.com',
 			name: 'Steven Marsh',
 			role: 'Vice Chair',
 			org: (city) => `NAMI ${city}`,
@@ -62,6 +67,7 @@
 		},
 		{
 			id: 'b5',
+			email: 'angela.reyes@gmail.com',
 			name: 'Angela Reyes',
 			role: 'Director',
 			org: (city) => `Hope Alliance of ${city}`,
@@ -72,6 +78,7 @@
 		},
 		{
 			id: 'b6',
+			email: 'wfoster@icloud.com',
 			name: 'William Foster',
 			role: 'Director Emeritus',
 			org: (city) => `Mental Health America of ${city}`,
@@ -82,6 +89,7 @@
 		},
 		{
 			id: 'b7',
+			email: 'sandra.liu@gmail.com',
 			name: 'Sandra Liu',
 			role: 'Secretary',
 			org: (city) => `${city} Behavioral Health Foundation`,
@@ -92,6 +100,7 @@
 		},
 		{
 			id: 'b8',
+			email: 'gregory.ashford@outlook.com',
 			name: 'Gregory Ashford',
 			role: 'Trustee',
 			org: (city) => `Hope Alliance of ${city}`,
@@ -103,9 +112,11 @@
 	];
 
 	let city = $state(CITIES[0]);
+	const selected = new SvelteSet<string>();
 	const added = new SvelteSet<string>();
-	const adding = new SvelteSet<string>();
+	let adding = $state(false);
 	let addError = $state('');
+	let addedMessage = $state('');
 	let apolloLabelId = $state<string | null>(null);
 	const segmentFilter = new SvelteSet<TalkTrackSegment>();
 	let segmentPanelOpen = $state(false);
@@ -133,15 +144,19 @@
 		if (!segmentWrapperEl?.contains(e.target as Node)) segmentPanelOpen = false;
 	}
 
+	function toggleSelectAll() {
+		if (!results) return;
+		if (selected.size === results.length) selected.clear();
+		else for (const p of results) selected.add(p.id);
+	}
+
 	async function discover() {
 		if (searching) return;
 		searching = true;
-		// Snapshot the filter so panel changes mid-search don't shift the results.
 		const useFilter =
 			segmentFilter.size > 0 && segmentFilter.size < SEGMENT_ORDER.length
 				? new Set(segmentFilter)
 				: null;
-		// Fake latency so the demo shows the loading state.
 		await new Promise((r) => setTimeout(r, 900));
 		searchedCity = city;
 		searchedSegmentLabel = useFilter
@@ -149,40 +164,57 @@
 				? SEGMENT_LABELS[[...useFilter][0]]
 				: `${useFilter.size} Segments`
 			: null;
-		// Demo mode: always show the full card set no matter what was searched.
-		results = DEMO_RESULTS;
+		const segs = useFilter ? [...useFilter] : null;
+		results = segs
+			? DEMO_RESULTS.map((p, i) => ({ ...p, segment: segs[i % segs.length] }))
+			: DEMO_RESULTS;
+		selected.clear();
+		addedMessage = '';
 		searching = false;
 	}
 
-	async function addToProspects(person: BoardProspect) {
-		if (adding.has(person.id) || added.has(person.id)) return;
-		adding.add(person.id);
+	async function addSelected() {
+		if (selected.size === 0 || !results || adding) return;
+		adding = true;
 		addError = '';
-		try {
-			const res = await fetch('/api/discover/add', {
-				method: 'POST',
-				headers: { 'content-type': 'application/json' },
-				body: JSON.stringify({
-					firstName: person.name.split(' ')[0],
-					lastName: person.name.split(' ').slice(1).join(' '),
-					title: person.role,
-					organization: person.org(searchedCity),
-					segment: person.segment,
-					apolloLabelId
-				})
-			});
-			const data = await res.json();
-			if (!res.ok) {
-				addError = data.error ?? 'Failed to add prospect';
-			} else {
-				added.add(person.id);
-				if (data.apolloLabelId) apolloLabelId = data.apolloLabelId;
+		addedMessage = '';
+		let count = 0;
+
+		const toAdd = results.filter((p) => selected.has(p.id) && !added.has(p.id));
+
+		for (const person of toAdd) {
+			try {
+				const res = await fetch('/api/discover/add', {
+					method: 'POST',
+					headers: { 'content-type': 'application/json' },
+					body: JSON.stringify({
+						firstName: person.name.split(' ')[0],
+						lastName: person.name.split(' ').slice(1).join(' '),
+						email: person.email,
+						title: person.role,
+						organization: person.org(searchedCity),
+						segment: person.segment,
+						apolloLabelId
+					})
+				});
+				const data = await res.json();
+				if (res.ok) {
+					added.add(person.id);
+					if (data.apolloLabelId) apolloLabelId = data.apolloLabelId;
+					count++;
+				} else {
+					addError = data.error ?? 'Failed to add prospect';
+				}
+			} catch {
+				addError = 'Failed to add prospect — check your connection.';
 			}
-		} catch {
-			addError = 'Failed to add prospect — check your connection.';
-		} finally {
-			adding.delete(person.id);
 		}
+
+		if (count > 0) {
+			addedMessage = `${count} ${count === 1 ? 'prospect' : 'prospects'} added`;
+		}
+		selected.clear();
+		adding = false;
 	}
 
 	function matchClass(match: number) {
@@ -207,7 +239,7 @@
 
 	<div class="mt-6 flex flex-wrap items-end gap-3 rounded-lg border border-cream-dim bg-white p-4">
 		<label class="min-w-45 flex-1">
-			<span class="text-xs font-bold tracking-wide text-ink/60 uppercase">City</span>
+			<span class="text-xs font-bold tracking-wide text-ink/60 uppercase">Select a City</span>
 			<select
 				bind:value={city}
 				class="mt-1 w-full cursor-pointer rounded-md border border-cream-dim bg-white px-3 py-2 text-sm font-bold text-ink"
@@ -218,7 +250,7 @@
 			</select>
 		</label>
 		<div class="min-w-45">
-			<span class="text-xs font-bold tracking-wide text-ink/60 uppercase">Segment</span>
+			<span class="text-xs font-bold tracking-wide text-ink/60 uppercase">Select a Segment</span>
 			<div class="relative mt-1" bind:this={segmentWrapperEl}>
 				<button
 					onclick={() => (segmentPanelOpen = !segmentPanelOpen)}
@@ -226,7 +258,7 @@
 				>
 					<span>
 						{segmentFilter.size === 0 || segmentFilter.size === SEGMENT_ORDER.length
-							? 'Segment'
+							? 'All Segments'
 							: segmentFilter.size === 1
 								? SEGMENT_LABELS[[...segmentFilter][0]]
 								: `${segmentFilter.size} Segments selected`}
@@ -284,24 +316,61 @@
 	{:else if results === null}
 		<!-- Nothing to show until the first search runs. -->
 	{:else}
-		<p class="mt-8 text-sm text-ink/60">
-			{results.length} high net worth board members found across
-			<span class="font-bold text-ink">{searchedOrgCount} mental health nonprofits</span>
-			in <span class="font-bold text-ink">{searchedCity}</span>
-			{#if searchedSegmentLabel}for <span class="font-bold text-ink">{searchedSegmentLabel}</span>{/if}
-		</p>
+		<div class="mt-8 flex flex-wrap items-center justify-between gap-3">
+			<p class="text-sm text-ink/60">
+				{results.length} high net worth board members found across
+				<span class="font-bold text-ink">{searchedOrgCount} mental health nonprofits</span>
+				in <span class="font-bold text-ink">{searchedCity}</span>
+				{#if searchedSegmentLabel}for <span class="font-bold text-ink">{searchedSegmentLabel}</span>{/if}
+			</p>
+			<div class="flex items-center gap-3">
+				{#if addedMessage}
+					<span class="text-xs text-ink/60">{addedMessage}</span>
+				{/if}
+				<button
+					onclick={addSelected}
+					disabled={selected.size === 0 || adding}
+					class="cursor-pointer rounded-md border border-coral px-3 py-1.5 text-xs font-bold tracking-wide text-coral uppercase transition-colors duration-300 ease-in-out hover:bg-coral hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+				>
+					{adding ? 'Adding…' : `Add to Prospects${selected.size > 0 ? ` (${selected.size})` : ''}`}
+				</button>
+			</div>
+		</div>
 		{#if addError}
 			<p class="mt-2 text-sm font-bold text-coral">{addError}</p>
 		{/if}
-		<div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+		<label class="mt-3 flex w-fit cursor-pointer items-center gap-2 text-sm text-ink/70">
+			<input
+				type="checkbox"
+				checked={selected.size === results.length}
+				onchange={toggleSelectAll}
+				class="accent-coral"
+			/>
+			Select all
+		</label>
+		<div class="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 			{#each results as person (person.id)}
 				<div class="flex flex-col rounded-lg border border-cream-dim bg-white p-5">
 					<div class="flex items-start justify-between gap-3">
-						<img
-							src={person.avatarUrl}
-							alt={person.name}
-							class="h-12 w-12 rounded-full border border-cream-dim object-cover"
-						/>
+						<div class="flex items-start gap-3">
+							{#if added.has(person.id)}
+								<span class="mt-0.5 text-xs font-bold text-periwinkle-dark">✓</span>
+							{:else}
+								<input
+									type="checkbox"
+									checked={selected.has(person.id)}
+									onchange={() =>
+										selected.has(person.id) ? selected.delete(person.id) : selected.add(person.id)}
+									aria-label={`Select ${person.name}`}
+									class="mt-0.5 cursor-pointer accent-coral"
+								/>
+							{/if}
+							<img
+								src={person.avatarUrl}
+								alt={person.name}
+								class="h-12 w-12 rounded-full border border-cream-dim object-cover"
+							/>
+						</div>
 						<div class="flex flex-wrap items-center justify-end gap-1.5">
 							<span class="rounded-full bg-navy/10 px-2.5 py-1 text-xs font-bold text-navy">
 								{SEGMENT_LABELS[person.segment]}
@@ -314,27 +383,10 @@
 
 					<p class="mt-4 font-bold text-navy">{person.name}</p>
 					<p class="mt-0.5 text-sm text-ink/70">{person.role}, {person.org(searchedCity)}</p>
-					<p class="mt-1 mb-4 text-xs text-ink/60">
+					<p class="mt-1 text-xs text-ink/60">{person.email}</p>
+					<p class="mt-1 text-xs text-ink/60">
 						Est. net worth <span class="font-bold text-ink">{person.netWorth}</span>
 					</p>
-
-					<div class="mt-auto flex items-center justify-end border-t border-cream-dim pt-4">
-						{#if added.has(person.id)}
-							<span
-								class="rounded-md border border-periwinkle-dark px-3 py-1.5 text-xs font-bold tracking-wide text-periwinkle-dark uppercase"
-							>
-								Added
-							</span>
-						{:else}
-							<button
-								onclick={() => addToProspects(person)}
-								disabled={adding.has(person.id)}
-								class="cursor-pointer rounded-md border border-coral px-3 py-1.5 text-xs font-bold tracking-wide text-coral uppercase transition-colors duration-300 ease-in-out hover:bg-coral hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
-							>
-								{adding.has(person.id) ? 'Adding…' : 'Add to Prospects'}
-							</button>
-						{/if}
-					</div>
 				</div>
 			{/each}
 		</div>
