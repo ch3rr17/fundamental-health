@@ -94,6 +94,7 @@ async function upsertProfile(
 		const data = await res.json();
 		const existingId = data.errors?.[0]?.meta?.duplicate_profile_id;
 		if (existingId) return existingId;
+		throw new Error(`Klaviyo profile upsert failed (409): ${JSON.stringify(data)}`);
 	}
 
 	const errorBody = await res.text();
