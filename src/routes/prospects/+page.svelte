@@ -26,12 +26,14 @@
 	let contactedPage = $state(1);
 	let unassignedPage = $state(1);
 
+	const CONTACTED_STATUSES = new Set(['already-contacted', 'pushed', 'send-confirmed', 'logged']);
+
 	const queueRows = $derived(
-		prospects.filter((p) => p.status !== 'already-contacted' && p.segment !== 'unassigned')
+		prospects.filter((p) => !CONTACTED_STATUSES.has(p.status) && p.segment !== 'unassigned')
 	);
-	const alreadyContactedRows = $derived(prospects.filter((p) => p.status === 'already-contacted'));
+	const alreadyContactedRows = $derived(prospects.filter((p) => CONTACTED_STATUSES.has(p.status)));
 	const unassignedRows = $derived(
-		prospects.filter((p) => p.segment === 'unassigned' && p.status !== 'already-contacted')
+		prospects.filter((p) => p.segment === 'unassigned' && !CONTACTED_STATUSES.has(p.status))
 	);
 
 	const filteredQueueRows = $derived(
