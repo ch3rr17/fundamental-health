@@ -198,12 +198,12 @@
 
 <svelte:window onclick={closePanels} />
 
-<div class="mx-auto max-w-7xl px-8 py-16">
+<div class="mx-auto max-w-6xl px-8 py-16">
 	<div class="flex items-center justify-between">
 		<h1 class="text-2xl font-bold text-navy">Prospects</h1>
 		<a
 			href={resolve('/import')}
-			class="rounded-md bg-linear-to-r from-coral to-amber px-4 py-3 text-sm font-bold tracking-wide text-white uppercase hover:from-coral hover:to-coral"
+			class="rounded-md bg-linear-to-r from-coral to-amber px-3 py-2 text-xs font-bold tracking-wide text-white uppercase hover:from-coral hover:to-coral"
 		>
 			+ Import Prospects
 		</a>
@@ -439,37 +439,53 @@
 			{/if}
 		</div>
 	{:else if tab === 'already-contacted'}
-		<div class="mt-6 flex items-center gap-3">
-			<div class="relative flex-1">
-				<input
-					type="text"
-					bind:value={contactedSearchQuery}
-					placeholder="Search prospects…"
-					class="w-full rounded-md border border-cream-dim bg-white px-3 py-2 pr-8 text-sm text-ink placeholder:text-ink/40"
-				/>
-				{#if contactedSearchQuery}
-					<button
-						onclick={() => (contactedSearchQuery = '')}
-						aria-label="Clear search"
-						class="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer text-ink/40 hover:text-ink"
-					>
-						×
-					</button>
-				{/if}
-			</div>
+		<div class="mt-6 flex items-center justify-between gap-3">
+			{#if recheckResult}
+				<p class="text-xs text-ink/60">
+					Checked {recheckResult.checked} prospects - {recheckResult.cleared} cleared and moved back to review.
+				</p>
+			{:else}
+				<span></span>
+			{/if}
 			<button
 				onclick={recheckKlaviyo}
 				disabled={recheckLoading}
-				class="shrink-0 cursor-pointer rounded-md border border-periwinkle-dark px-4 py-2 text-sm font-bold text-periwinkle-dark hover:bg-periwinkle-dark hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+				class="flex shrink-0 cursor-pointer items-center gap-1.5 rounded-md border border-periwinkle-dark px-3 py-2 text-xs font-bold text-periwinkle-dark hover:bg-periwinkle-dark hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
 			>
-				{recheckLoading ? 'Checking…' : 'Recheck Klaviyo'}
+				<svg
+					width="12"
+					height="12"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2.5"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class={recheckLoading ? 'animate-spin' : ''}
+				>
+					<path d="M21 12a9 9 0 1 1-2.64-6.36" />
+					<path d="M21 3v6h-6" />
+				</svg>
+				{recheckLoading ? 'Syncing…' : 'Sync with Klaviyo'}
 			</button>
 		</div>
-		{#if recheckResult}
-			<p class="mt-2 text-xs text-ink/60">
-				Checked {recheckResult.checked} prospects - {recheckResult.cleared} cleared and moved back to review.
-			</p>
-		{/if}
+		<div class="relative mt-3">
+			<input
+				type="text"
+				bind:value={contactedSearchQuery}
+				placeholder="Search prospects…"
+				class="w-full rounded-md border border-cream-dim bg-white px-3 py-2 pr-8 text-sm text-ink placeholder:text-ink/40"
+			/>
+			{#if contactedSearchQuery}
+				<button
+					onclick={() => (contactedSearchQuery = '')}
+					aria-label="Clear search"
+					class="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer text-ink/40 hover:text-ink"
+				>
+					×
+				</button>
+			{/if}
+		</div>
 
 		<div class="mt-6 overflow-x-auto rounded-md border border-cream-dim bg-white">
 			<table class="w-full text-sm whitespace-nowrap">

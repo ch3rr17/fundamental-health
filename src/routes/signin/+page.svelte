@@ -23,7 +23,7 @@
 		<button
 			onclick={handleSignIn}
 			disabled={loading}
-			class="mt-8 flex w-full cursor-pointer items-center justify-center gap-3 rounded-md border border-cream-dim bg-white px-4 py-3 text-sm font-bold text-ink transition-colors duration-300 ease-in-out hover:bg-cream-soft disabled:cursor-not-allowed disabled:opacity-60"
+			class="mt-8 flex w-full cursor-pointer items-center justify-center gap-3 rounded-md border border-cream-dim bg-white px-3 py-2 text-xs font-bold text-ink transition-colors duration-300 ease-in-out hover:bg-cream-soft disabled:cursor-not-allowed disabled:opacity-60"
 		>
 			<svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
 				<path
