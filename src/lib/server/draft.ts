@@ -28,6 +28,8 @@ STRICT RULES — follow these exactly:
 - Use the talk-track framing and CTA provided, adapted naturally to the prospect.
 - Do NOT mention that you are an AI or that this was auto-generated.
 - Sign off as the Development Associate at FundaMental Health (leave the name as [Your Name] for the intern to fill in).
+- NEVER use en dashes (–) or em dashes (—). Rewrite with a comma, period, or a plain hyphen instead.
+- Avoid stock AI-sounding phrasing ("I hope this finds you well," "I wanted to reach out," neatly parallel three-part sentences). Vary sentence length and keep the voice plainspoken, the way a real development associate would actually write.
 
 OUTPUT FORMAT — return valid JSON only, no markdown fencing:
 {
@@ -36,6 +38,30 @@ OUTPUT FORMAT — return valid JSON only, no markdown fencing:
   "researchSummary": "2-3 sentence summary of what you know about this prospect and why they fit this segment",
   "researchConfidence": 0.0 to 1.0 indicating how much public information was available to personalize with
 }`;
+
+// Safety net behind the system prompt's dash instruction: the model occasionally
+// slips one in anyway, and an em/en dash is a well-known "this was AI-written" tell.
+export function stripDashes(input: string): string {
+	let text = input;
+
+	// Digit ranges ("2020–2026", "10 – 15") read fine as a plain hyphen with no spaces.
+	text = text.replace(/(\d)\s*[–—]\s*(\d)/g, '$1-$2');
+
+	// A dash pair enclosing a clause is a parenthetical aside — commas do the same job.
+	text = text.replace(/ [–—] ([^–—]+?) [–—] /g, ', $1, ');
+
+	// A lone dash flanked by spaces is usually a sentence break used for emphasis. Split
+	// it into two sentences when enough precedes it to stand alone; otherwise it's just a pause.
+	text = text.replace(/([^.!?]*) [–—] (\w)/g, (_match, before: string, next: string) => {
+		const wordCount = before.trim().split(/\s+/).filter(Boolean).length;
+		return wordCount >= 4 ? `${before.trim()}. ${next.toUpperCase()}` : `${before.trim()}, ${next}`;
+	});
+
+	// Whatever's left (no clean surrounding spaces to reason about) just becomes a hyphen.
+	text = text.replace(/[–—]/g, '-');
+
+	return text;
+}
 
 export async function generateDraft(prospectId: string) {
 	const prospect = await db.select().from(prospects).where(eq(prospects.id, prospectId));
@@ -46,7 +72,9 @@ export async function generateDraft(prospectId: string) {
 	const p = prospect[0];
 
 	if (p.segment === 'unassigned') {
-		throw new Error('Cannot generate draft for unassigned segment — assign a talk-track segment first');
+		throw new Error(
+			'Cannot generate draft for unassigned segment — assign a talk-track segment first'
+		);
 	}
 
 	const segment = p.segment as TalkTrackSegment;
@@ -80,22 +108,33 @@ Generate the email now. Return valid JSON only.`;
 	let text = response.content[0].type === 'text' ? response.content[0].text : '';
 
 	// Strip markdown fencing if the model wraps the JSON
-	text = text.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/i, '').trim();
+	text = text
+		.replace(/^```(?:json)?\s*\n?/i, '')
+		.replace(/\n?```\s*$/i, '')
+		.trim();
 
-	let parsed: { subject: string; body: string; researchSummary: string; researchConfidence: number };
+	let parsed: {
+		subject: string;
+		body: string;
+		researchSummary: string;
+		researchConfidence: number;
+	};
 	try {
 		parsed = JSON.parse(text);
 	} catch {
 		throw new Error('Failed to parse AI response as JSON');
 	}
 
+	const subject = stripDashes(parsed.subject);
+	const body = stripDashes(parsed.body);
+
 	const [draft] = await db
 		.insert(draftEmails)
 		.values({
 			prospectId: p.id,
 			segment,
-			subject: parsed.subject,
-			body: parsed.body,
+			subject,
+			body,
 			researchSummary: parsed.researchSummary,
 			researchConfidence: parsed.researchConfidence,
 			approved: false
