@@ -1,7 +1,8 @@
 ---
-status: draft
+status: published
 stage: grilled
 source: engineering-interview-me
+issue: https://github.com/ch3rr17/fundamental-health/issues/5
 ---
 
 # AI Donor Outreach Agent
