@@ -88,6 +88,69 @@ export async function fetchLists() {
 	}));
 }
 
+/** Create a new label (list) in Apollo. Returns the label ID. */
+export async function createLabel(name: string): Promise<string> {
+	const apiKey = getApiKey();
+
+	const res = await fetch(`${BASE_URL}/labels`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'X-Api-Key': apiKey
+		},
+		body: JSON.stringify({ name, modality: 'contacts' })
+	});
+
+	if (!res.ok) {
+		const errorBody = await res.text();
+		throw new Error(`Apollo create label failed (${res.status}): ${errorBody}`);
+	}
+
+	const data = await res.json();
+	return data.label?.id ?? data.id;
+}
+
+/** Add a contact to Apollo and assign it to a label. Returns the contact ID. */
+export async function addContactToApollo(
+	contact: {
+		firstName: string;
+		lastName: string;
+		email: string | null;
+		title: string | null;
+		organization: string | null;
+		linkedinUrl: string | null;
+		location: string | null;
+	},
+	labelId: string
+): Promise<string> {
+	const apiKey = getApiKey();
+
+	const res = await fetch(`${BASE_URL}/contacts`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'X-Api-Key': apiKey
+		},
+		body: JSON.stringify({
+			first_name: contact.firstName,
+			last_name: contact.lastName,
+			email: contact.email,
+			title: contact.title,
+			organization_name: contact.organization,
+			linkedin_url: contact.linkedinUrl,
+			label_ids: [labelId]
+		})
+	});
+
+	if (!res.ok) {
+		const errorBody = await res.text();
+		throw new Error(`Apollo add contact failed (${res.status}): ${errorBody}`);
+	}
+
+	const data = await res.json();
+	return data.contact?.id ?? data.id;
+}
+
 /** Pull contacts from an Apollo list and import them into the database. */
 export async function importFromApollo(labelId: string, labelName?: string) {
 	const contacts = await fetchListContacts(labelId);

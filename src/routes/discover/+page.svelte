@@ -113,19 +113,12 @@
 
 	let city = $state(CITIES[0]);
 	const selected = new SvelteSet<string>();
+	const added = new SvelteSet<string>();
+	let adding = $state(false);
+	let addError = $state('');
 	let addedMessage = $state('');
-
-	function toggleSelectAll() {
-		if (!results) return;
-		if (selected.size === results.length) selected.clear();
-		else for (const p of results) selected.add(p.id);
-	}
-
-	function addSelected() {
-		if (selected.size === 0) return;
-		addedMessage = `${selected.size} ${selected.size === 1 ? 'prospect' : 'prospects'} added`;
-		selected.clear();
-	}
+	let apolloLabelId = $state<string | null>(null);
+	let apolloLabelName = $state<string | null>(null);
 	const segmentFilter = new SvelteSet<TalkTrackSegment>();
 	let segmentPanelOpen = $state(false);
 	let segmentWrapperEl = $state<HTMLElement | undefined>();
@@ -152,15 +145,19 @@
 		if (!segmentWrapperEl?.contains(e.target as Node)) segmentPanelOpen = false;
 	}
 
+	function toggleSelectAll() {
+		if (!results) return;
+		if (selected.size === results.length) selected.clear();
+		else for (const p of results) selected.add(p.id);
+	}
+
 	async function discover() {
 		if (searching) return;
 		searching = true;
-		// Snapshot the filter so panel changes mid-search don't shift the results.
 		const useFilter =
 			segmentFilter.size > 0 && segmentFilter.size < SEGMENT_ORDER.length
 				? new Set(segmentFilter)
 				: null;
-		// Fake latency so the demo shows the loading state.
 		await new Promise((r) => setTimeout(r, 900));
 		searchedCity = city;
 		searchedSegmentLabel = useFilter
@@ -168,9 +165,6 @@
 				? SEGMENT_LABELS[[...useFilter][0]]
 				: `${useFilter.size} Segments`
 			: null;
-		// Demo mode: always show the full card set no matter what was searched,
-		// but retag each card with the selected segments so the pills line up
-		// with the filter.
 		const segs = useFilter ? [...useFilter] : null;
 		results = segs
 			? DEMO_RESULTS.map((p, i) => ({ ...p, segment: segs[i % segs.length] }))
@@ -178,6 +172,52 @@
 		selected.clear();
 		addedMessage = '';
 		searching = false;
+	}
+
+	async function addSelected() {
+		if (selected.size === 0 || !results || adding) return;
+		adding = true;
+		addError = '';
+		addedMessage = '';
+		let count = 0;
+
+		const toAdd = results.filter((p) => selected.has(p.id) && !added.has(p.id));
+
+		for (const person of toAdd) {
+			try {
+				const res = await fetch('/api/discover/add', {
+					method: 'POST',
+					headers: { 'content-type': 'application/json' },
+					body: JSON.stringify({
+						firstName: person.name.split(' ')[0],
+						lastName: person.name.split(' ').slice(1).join(' '),
+						email: person.email,
+						title: person.role,
+						organization: person.org(searchedCity),
+						segment: person.segment,
+						apolloLabelId,
+						apolloLabelName
+					})
+				});
+				const data = await res.json();
+				if (res.ok) {
+					added.add(person.id);
+					if (data.apolloLabelId) apolloLabelId = data.apolloLabelId;
+					if (data.apolloLabelName) apolloLabelName = data.apolloLabelName;
+					count++;
+				} else {
+					addError = data.error ?? 'Failed to add prospect';
+				}
+			} catch {
+				addError = 'Failed to add prospect — check your connection.';
+			}
+		}
+
+		if (count > 0) {
+			addedMessage = `${count} ${count === 1 ? 'prospect' : 'prospects'} added`;
+		}
+		selected.clear();
+		adding = false;
 	}
 
 	function matchClass(match: number) {
@@ -292,13 +332,16 @@
 				{/if}
 				<button
 					onclick={addSelected}
-					disabled={selected.size === 0}
+					disabled={selected.size === 0 || adding}
 					class="cursor-pointer rounded-md border border-coral px-3 py-1.5 text-xs font-bold tracking-wide text-coral uppercase transition-colors duration-300 ease-in-out hover:bg-coral hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
 				>
-					Add to Prospects{selected.size > 0 ? ` (${selected.size})` : ''}
+					{adding ? 'Adding…' : `Add to Prospects${selected.size > 0 ? ` (${selected.size})` : ''}`}
 				</button>
 			</div>
 		</div>
+		{#if addError}
+			<p class="mt-2 text-sm font-bold text-coral">{addError}</p>
+		{/if}
 		<label class="mt-3 flex w-fit cursor-pointer items-center gap-2 text-sm text-ink/70">
 			<input
 				type="checkbox"
@@ -313,14 +356,18 @@
 				<div class="flex flex-col rounded-lg border border-cream-dim bg-white p-5">
 					<div class="flex items-start justify-between gap-3">
 						<div class="flex items-start gap-3">
-							<input
-								type="checkbox"
-								checked={selected.has(person.id)}
-								onchange={() =>
-									selected.has(person.id) ? selected.delete(person.id) : selected.add(person.id)}
-								aria-label={`Select ${person.name}`}
-								class="mt-0.5 cursor-pointer accent-coral"
-							/>
+							{#if added.has(person.id)}
+								<span class="mt-0.5 text-xs font-bold text-periwinkle-dark">✓</span>
+							{:else}
+								<input
+									type="checkbox"
+									checked={selected.has(person.id)}
+									onchange={() =>
+										selected.has(person.id) ? selected.delete(person.id) : selected.add(person.id)}
+									aria-label={`Select ${person.name}`}
+									class="mt-0.5 cursor-pointer accent-coral"
+								/>
+							{/if}
 							<img
 								src={person.avatarUrl}
 								alt={person.name}
