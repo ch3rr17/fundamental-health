@@ -19,6 +19,11 @@
 	let segmentWrapperEl = $state<HTMLElement | undefined>();
 	let statusWrapperEl = $state<HTMLElement | undefined>();
 
+	const PAGE_SIZE = 10;
+	let queuePage = $state(1);
+	let contactedPage = $state(1);
+	let unassignedPage = $state(1);
+
 	const queueRows = $derived(
 		prospects.filter((p) => p.status !== 'already-contacted' && p.segment !== 'unassigned')
 	);
@@ -40,6 +45,15 @@
 			return matchesSegment && matchesStatus && matchesSearch;
 		})
 	);
+	const queueTotalPages = $derived(Math.max(1, Math.ceil(filteredQueueRows.length / PAGE_SIZE)));
+	const queuePageClamped = $derived(Math.min(queuePage, queueTotalPages));
+	const paginatedQueueRows = $derived(
+		filteredQueueRows.slice((queuePageClamped - 1) * PAGE_SIZE, queuePageClamped * PAGE_SIZE)
+	);
+	const queueRangeStart = $derived(
+		filteredQueueRows.length === 0 ? 0 : (queuePageClamped - 1) * PAGE_SIZE + 1
+	);
+	const queueRangeEnd = $derived(Math.min(queuePageClamped * PAGE_SIZE, filteredQueueRows.length));
 
 	const filteredAlreadyContactedRows = $derived(
 		alreadyContactedRows.filter((p) => {
@@ -50,6 +64,22 @@
 				(p.organization ?? '').toLowerCase().includes(query)
 			);
 		})
+	);
+	const contactedTotalPages = $derived(
+		Math.max(1, Math.ceil(filteredAlreadyContactedRows.length / PAGE_SIZE))
+	);
+	const contactedPageClamped = $derived(Math.min(contactedPage, contactedTotalPages));
+	const paginatedAlreadyContactedRows = $derived(
+		filteredAlreadyContactedRows.slice(
+			(contactedPageClamped - 1) * PAGE_SIZE,
+			contactedPageClamped * PAGE_SIZE
+		)
+	);
+	const contactedRangeStart = $derived(
+		filteredAlreadyContactedRows.length === 0 ? 0 : (contactedPageClamped - 1) * PAGE_SIZE + 1
+	);
+	const contactedRangeEnd = $derived(
+		Math.min(contactedPageClamped * PAGE_SIZE, filteredAlreadyContactedRows.length)
 	);
 
 	const filteredUnassignedRows = $derived(
@@ -62,6 +92,22 @@
 				(p.title ?? '').toLowerCase().includes(query)
 			);
 		})
+	);
+	const unassignedTotalPages = $derived(
+		Math.max(1, Math.ceil(filteredUnassignedRows.length / PAGE_SIZE))
+	);
+	const unassignedPageClamped = $derived(Math.min(unassignedPage, unassignedTotalPages));
+	const paginatedUnassignedRows = $derived(
+		filteredUnassignedRows.slice(
+			(unassignedPageClamped - 1) * PAGE_SIZE,
+			unassignedPageClamped * PAGE_SIZE
+		)
+	);
+	const unassignedRangeStart = $derived(
+		filteredUnassignedRows.length === 0 ? 0 : (unassignedPageClamped - 1) * PAGE_SIZE + 1
+	);
+	const unassignedRangeEnd = $derived(
+		Math.min(unassignedPageClamped * PAGE_SIZE, filteredUnassignedRows.length)
 	);
 
 	function toggleSegment(seg: TalkTrackSegment) {
@@ -296,7 +342,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each filteredQueueRows as p (p.id)}
+					{#each paginatedQueueRows as p (p.id)}
 						<tr
 							onclick={() => openProspect(p.id)}
 							class="cursor-pointer border-t border-cream-dim hover:bg-gray-100"
@@ -337,6 +383,30 @@
 				</tbody>
 			</table>
 		</div>
+		<div class="mt-2 flex items-center justify-between">
+			<p class="text-xs text-ink/50">
+				Showing {queueRangeStart}–{queueRangeEnd} of {filteredQueueRows.length} Prospects
+			</p>
+			{#if queueTotalPages > 1}
+				<div class="flex items-center gap-3">
+					<button
+						onclick={() => (queuePage = queuePageClamped - 1)}
+						disabled={queuePageClamped <= 1}
+						class="cursor-pointer text-xs font-bold text-periwinkle-dark hover:underline disabled:cursor-not-allowed disabled:text-ink/30 disabled:no-underline"
+					>
+						← Prev
+					</button>
+					<span class="text-xs text-ink/50">Page {queuePageClamped} of {queueTotalPages}</span>
+					<button
+						onclick={() => (queuePage = queuePageClamped + 1)}
+						disabled={queuePageClamped >= queueTotalPages}
+						class="cursor-pointer text-xs font-bold text-periwinkle-dark hover:underline disabled:cursor-not-allowed disabled:text-ink/30 disabled:no-underline"
+					>
+						Next →
+					</button>
+				</div>
+			{/if}
+		</div>
 	{:else if tab === 'already-contacted'}
 		<div class="relative mt-6">
 			<input
@@ -369,7 +439,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each filteredAlreadyContactedRows as p (p.id)}
+					{#each paginatedAlreadyContactedRows as p (p.id)}
 						<tr
 							onclick={() => openProspect(p.id)}
 							class="cursor-pointer border-t border-cream-dim hover:bg-gray-100"
@@ -414,6 +484,30 @@
 				</tbody>
 			</table>
 		</div>
+		<div class="mt-2 flex items-center justify-between">
+			<p class="text-xs text-ink/50">
+				Showing {contactedRangeStart}–{contactedRangeEnd} of {filteredAlreadyContactedRows.length} Prospects
+			</p>
+			{#if contactedTotalPages > 1}
+				<div class="flex items-center gap-3">
+					<button
+						onclick={() => (contactedPage = contactedPageClamped - 1)}
+						disabled={contactedPageClamped <= 1}
+						class="cursor-pointer text-xs font-bold text-periwinkle-dark hover:underline disabled:cursor-not-allowed disabled:text-ink/30 disabled:no-underline"
+					>
+						← Prev
+					</button>
+					<span class="text-xs text-ink/50">Page {contactedPageClamped} of {contactedTotalPages}</span>
+					<button
+						onclick={() => (contactedPage = contactedPageClamped + 1)}
+						disabled={contactedPageClamped >= contactedTotalPages}
+						class="cursor-pointer text-xs font-bold text-periwinkle-dark hover:underline disabled:cursor-not-allowed disabled:text-ink/30 disabled:no-underline"
+					>
+						Next →
+					</button>
+				</div>
+			{/if}
+		</div>
 	{:else}
 		<div class="relative mt-6">
 			<input
@@ -446,7 +540,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each filteredUnassignedRows as p (p.id)}
+					{#each paginatedUnassignedRows as p (p.id)}
 						<tr
 							onclick={() => openProspect(p.id)}
 							class="cursor-pointer border-t border-cream-dim hover:bg-gray-100"
@@ -486,6 +580,30 @@
 					{/each}
 				</tbody>
 			</table>
+		</div>
+		<div class="mt-2 flex items-center justify-between">
+			<p class="text-xs text-ink/50">
+				Showing {unassignedRangeStart}–{unassignedRangeEnd} of {filteredUnassignedRows.length} Prospects
+			</p>
+			{#if unassignedTotalPages > 1}
+				<div class="flex items-center gap-3">
+					<button
+						onclick={() => (unassignedPage = unassignedPageClamped - 1)}
+						disabled={unassignedPageClamped <= 1}
+						class="cursor-pointer text-xs font-bold text-periwinkle-dark hover:underline disabled:cursor-not-allowed disabled:text-ink/30 disabled:no-underline"
+					>
+						← Prev
+					</button>
+					<span class="text-xs text-ink/50">Page {unassignedPageClamped} of {unassignedTotalPages}</span>
+					<button
+						onclick={() => (unassignedPage = unassignedPageClamped + 1)}
+						disabled={unassignedPageClamped >= unassignedTotalPages}
+						class="cursor-pointer text-xs font-bold text-periwinkle-dark hover:underline disabled:cursor-not-allowed disabled:text-ink/30 disabled:no-underline"
+					>
+						Next →
+					</button>
+				</div>
+			{/if}
 		</div>
 	{/if}
 </div>
