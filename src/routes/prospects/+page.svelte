@@ -201,12 +201,20 @@
 <div class="mx-auto max-w-6xl px-8 py-16">
 	<div class="flex items-center justify-between">
 		<h1 class="text-2xl font-bold text-navy">Prospects</h1>
-		<a
-			href={resolve('/import')}
-			class="rounded-md bg-linear-to-r from-coral to-amber px-3 py-2 text-xs font-bold tracking-wide text-white uppercase hover:from-coral hover:to-coral"
-		>
-			+ Import Prospects
-		</a>
+		<div class="flex gap-2">
+			<a
+				href={resolve('/discover')}
+				class="rounded-md border border-periwinkle-dark px-3 py-2 text-xs font-bold tracking-wide text-periwinkle-dark uppercase hover:bg-periwinkle-dark hover:text-white"
+			>
+				Discover
+			</a>
+			<a
+				href={resolve('/import')}
+				class="rounded-md bg-linear-to-r from-coral to-amber px-3 py-2 text-xs font-bold tracking-wide text-white uppercase hover:from-coral hover:to-coral"
+			>
+				+ Import Prospects
+			</a>
+		</div>
 	</div>
 
 	<div class="mt-8 flex gap-10 border-b border-cream-dim">
@@ -268,7 +276,7 @@
 							? 'Segment'
 							: segmentFilter.size === 1
 								? segmentLabel([...segmentFilter][0])
-								: `${segmentFilter.size} verticals selected`}
+								: `${segmentFilter.size} Segments selected`}
 					</span>
 					<svg
 						width="10"

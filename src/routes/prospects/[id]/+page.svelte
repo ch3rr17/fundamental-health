@@ -216,6 +216,7 @@
 					bind:value={manualSegment}
 					class="rounded-md border border-cream-dim px-3 py-2 text-sm font-bold text-ink"
 				>
+				{busy ? 'Researching and drafting email…' : 'Research and Draft Email'}
 					{#each SEGMENT_ORDER as seg (seg)}
 						<option value={seg} disabled={seg === prospect.priorTalkTrack}
 							>{SEGMENT_LABELS[seg]}</option
