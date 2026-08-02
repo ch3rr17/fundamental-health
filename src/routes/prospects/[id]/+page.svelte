@@ -9,6 +9,7 @@
 	let draft = $derived(data.draft as DraftEmail | null);
 
 	function statusChipClass(status: Prospect['status']) {
+		if (status === 'needs-review') return 'bg-coral/10 text-coral';
 		if (status === 'send-confirmed' || status === 'logged') return 'bg-sky text-periwinkle-dark';
 		if (status === 'approved' || status === 'pushed') return 'bg-amber/20 text-amber';
 		if (status === 'draft-ready') return 'bg-navy/10 text-navy';
@@ -86,10 +87,20 @@
 		errorMsg = '';
 		pushResult = null;
 		try {
+			const approvePayload: { approved: true; acknowledgeReview?: true } = { approved: true };
+
+			if (prospect.status === 'needs-review') {
+				const proceed = confirm(
+					'This prospect was flagged for a possible prompt injection attempt in its imported data. Review the draft carefully before sending. Approve and send anyway?'
+				);
+				if (!proceed) return;
+				approvePayload.acknowledgeReview = true;
+			}
+
 			const approveRes = await fetch(`/api/drafts/${draft.id}`, {
 				method: 'PATCH',
 				headers: { 'content-type': 'application/json' },
-				body: JSON.stringify({ approved: true })
+				body: JSON.stringify(approvePayload)
 			});
 			if (!approveRes.ok) {
 				const d = await approveRes.json();
@@ -152,7 +163,9 @@
 </script>
 
 <div class="mx-auto max-w-6xl px-6 py-12">
-	<a href={resolve('/prospects')} class="text-xs font-bold text-periwinkle-dark hover:underline">← Back to Prospects</a>
+	<a href={resolve('/prospects')} class="text-xs font-bold text-periwinkle-dark hover:underline"
+		>← Back to Prospects</a
+	>
 
 	{#if errorMsg}
 		<p class="mt-4 rounded-md bg-coral/10 px-4 py-3 text-sm font-bold text-coral">{errorMsg}</p>
@@ -163,11 +176,15 @@
 			<div>
 				<h1 class="text-2xl font-bold text-navy">{prospect.firstName} {prospect.lastName}</h1>
 				<p class="mt-2 text-sm text-ink/70">
-					{prospect.title ?? ''}{prospect.title && prospect.organization ? ', ' : ''}{prospect.organization ?? ''}
+					{prospect.title ?? ''}{prospect.title && prospect.organization
+						? ', '
+						: ''}{prospect.organization ?? ''}
 					{prospect.location ? ` · ${prospect.location}` : ''}
 				</p>
 				<div class="mt-3 flex items-center gap-2">
-					<span class="shrink-0 whitespace-nowrap rounded-full bg-cream-soft px-3 py-1 text-xs font-bold text-navy">
+					<span
+						class="shrink-0 rounded-full bg-cream-soft px-3 py-1 text-xs font-bold whitespace-nowrap text-navy"
+					>
 						{prospect.priorTalkTrack ? SEGMENT_LABELS[prospect.priorTalkTrack] : 'Unassigned'}
 					</span>
 				</div>
@@ -177,31 +194,40 @@
 						: 'Prior contact date unknown'}
 				</p>
 			</div>
-			<span class="shrink-0 whitespace-nowrap rounded-full px-3 py-1 text-xs font-bold {statusChipClass(prospect.status)}">
+			<span
+				class="shrink-0 rounded-full px-3 py-1 text-xs font-bold whitespace-nowrap {statusChipClass(
+					prospect.status
+				)}"
+			>
 				{STATUS_LABELS[prospect.status]}
 			</span>
 		</div>
 		<hr class="mt-8 border-cream-dim" />
 		<div class="mt-8 flex items-end gap-3">
-				<div>
-					<label for="manual-segment" class="mb-2 block text-xs font-bold tracking-wide text-ink/60 uppercase">
-						Choose new segment
-					</label>
-					<select
-						id="manual-segment"
-						bind:value={manualSegment}
-						class="rounded-md border border-cream-dim px-3 py-2 text-sm font-bold text-ink"
-					>
-						{#each SEGMENT_ORDER as seg (seg)}
-							<option value={seg} disabled={seg === prospect.priorTalkTrack}>{SEGMENT_LABELS[seg]}</option>
-						{/each}
-					</select>
-				</div>
-				<button
-					onclick={reapproach}
-					disabled={busy}
-					class="cursor-pointer rounded-md bg-linear-to-r from-coral to-amber px-3 py-2 text-xs font-bold tracking-wide text-white uppercase disabled:cursor-not-allowed disabled:opacity-50"
+			<div>
+				<label
+					for="manual-segment"
+					class="mb-2 block text-xs font-bold tracking-wide text-ink/60 uppercase"
 				>
+					Choose new segment
+				</label>
+				<select
+					id="manual-segment"
+					bind:value={manualSegment}
+					class="rounded-md border border-cream-dim px-3 py-2 text-sm font-bold text-ink"
+				>
+					{#each SEGMENT_ORDER as seg (seg)}
+						<option value={seg} disabled={seg === prospect.priorTalkTrack}
+							>{SEGMENT_LABELS[seg]}</option
+						>
+					{/each}
+				</select>
+			</div>
+			<button
+				onclick={reapproach}
+				disabled={busy}
+				class="cursor-pointer rounded-md bg-linear-to-r from-coral to-amber px-3 py-2 text-xs font-bold tracking-wide text-white uppercase disabled:cursor-not-allowed disabled:opacity-50"
+			>
 				{busy ? 'Re-approaching…' : 'Research and Draft Email'}
 			</button>
 		</div>
@@ -214,11 +240,14 @@
 
 			<div class="overflow-hidden rounded-lg border border-cream-dim bg-white">
 				<div class="flex items-center gap-2 border-b border-cream-dim px-4 py-3 text-sm">
-					<span class="w-12 shrink-0 text-xs font-bold tracking-wide text-ink/60 uppercase">From</span>
+					<span class="w-12 shrink-0 text-xs font-bold tracking-wide text-ink/60 uppercase"
+						>From</span
+					>
 					<span class="text-ink/40">—</span>
 				</div>
 				<div class="flex items-center gap-2 border-b border-cream-dim px-4 py-3 text-sm">
-					<span class="w-12 shrink-0 text-xs font-bold tracking-wide text-ink/60 uppercase">To</span>
+					<span class="w-12 shrink-0 text-xs font-bold tracking-wide text-ink/60 uppercase">To</span
+					>
 					<span class="text-ink">{prospect.email ?? '—'}</span>
 				</div>
 				<div class="px-4 py-12 text-center text-sm text-ink/50">Email hasn't been drafted yet.</div>
@@ -229,38 +258,50 @@
 			<div>
 				<h1 class="text-2xl font-bold text-navy">{prospect.firstName} {prospect.lastName}</h1>
 				<p class="mt-2 text-sm text-ink/70">
-					{prospect.title ?? ''}{prospect.title && prospect.organization ? ', ' : ''}{prospect.organization ?? ''}
+					{prospect.title ?? ''}{prospect.title && prospect.organization
+						? ', '
+						: ''}{prospect.organization ?? ''}
 					{prospect.location ? ` · ${prospect.location}` : ''}
 				</p>
 				<div class="mt-3 flex items-center gap-2">
-					<span class="shrink-0 whitespace-nowrap rounded-full bg-cream-soft px-3 py-1 text-xs font-bold text-navy">Unassigned</span>
+					<span
+						class="shrink-0 rounded-full bg-cream-soft px-3 py-1 text-xs font-bold whitespace-nowrap text-navy"
+						>Unassigned</span
+					>
 				</div>
 			</div>
-			<span class="shrink-0 whitespace-nowrap rounded-full px-3 py-1 text-xs font-bold {statusChipClass(prospect.status)}">
+			<span
+				class="shrink-0 rounded-full px-3 py-1 text-xs font-bold whitespace-nowrap {statusChipClass(
+					prospect.status
+				)}"
+			>
 				{STATUS_LABELS[prospect.status]}
 			</span>
 		</div>
 		<hr class="mt-8 border-cream-dim" />
 		<div class="mt-8 flex items-end gap-3">
-				<div>
-					<label for="manual-segment" class="mb-2 block text-xs font-bold tracking-wide text-ink/60 uppercase">
-						Assign Segment
-					</label>
-					<select
-						id="manual-segment"
-						bind:value={manualSegment}
-						class="rounded-md border border-cream-dim px-3 py-2 text-sm font-bold text-ink"
-					>
-						{#each SEGMENT_ORDER as seg (seg)}
-							<option value={seg}>{SEGMENT_LABELS[seg]}</option>
-						{/each}
-					</select>
-				</div>
-				<button
-					onclick={assignSegmentManually}
-					disabled={busy}
-					class="cursor-pointer rounded-md bg-linear-to-r from-coral to-amber px-3 py-2 text-xs font-bold tracking-wide text-white uppercase disabled:cursor-not-allowed disabled:opacity-50"
+			<div>
+				<label
+					for="manual-segment"
+					class="mb-2 block text-xs font-bold tracking-wide text-ink/60 uppercase"
 				>
+					Assign Segment
+				</label>
+				<select
+					id="manual-segment"
+					bind:value={manualSegment}
+					class="rounded-md border border-cream-dim px-3 py-2 text-sm font-bold text-ink"
+				>
+					{#each SEGMENT_ORDER as seg (seg)}
+						<option value={seg}>{SEGMENT_LABELS[seg]}</option>
+					{/each}
+				</select>
+			</div>
+			<button
+				onclick={assignSegmentManually}
+				disabled={busy}
+				class="cursor-pointer rounded-md bg-linear-to-r from-coral to-amber px-3 py-2 text-xs font-bold tracking-wide text-white uppercase disabled:cursor-not-allowed disabled:opacity-50"
+			>
 				Research and Draft Email
 			</button>
 		</div>
@@ -273,11 +314,14 @@
 
 			<div class="overflow-hidden rounded-lg border border-cream-dim bg-white">
 				<div class="flex items-center gap-2 border-b border-cream-dim px-4 py-3 text-sm">
-					<span class="w-12 shrink-0 text-xs font-bold tracking-wide text-ink/60 uppercase">From</span>
+					<span class="w-12 shrink-0 text-xs font-bold tracking-wide text-ink/60 uppercase"
+						>From</span
+					>
 					<span class="text-ink/40">—</span>
 				</div>
 				<div class="flex items-center gap-2 border-b border-cream-dim px-4 py-3 text-sm">
-					<span class="w-12 shrink-0 text-xs font-bold tracking-wide text-ink/60 uppercase">To</span>
+					<span class="w-12 shrink-0 text-xs font-bold tracking-wide text-ink/60 uppercase">To</span
+					>
 					<span class="text-ink">{prospect.email ?? '—'}</span>
 				</div>
 				<div class="px-4 py-12 text-center text-sm text-ink/50">Email hasn't been drafted yet.</div>
@@ -288,29 +332,41 @@
 			<div>
 				<h1 class="text-2xl font-bold text-navy">{prospect.firstName} {prospect.lastName}</h1>
 				<p class="mt-2 text-sm text-ink/70">
-					{prospect.title ?? ''}{prospect.title && prospect.organization ? ', ' : ''}{prospect.organization ?? ''}
+					{prospect.title ?? ''}{prospect.title && prospect.organization
+						? ', '
+						: ''}{prospect.organization ?? ''}
 					{prospect.location ? ` · ${prospect.location}` : ''}
 				</p>
 				<div class="mt-3 flex items-center gap-2">
-					<span class="shrink-0 whitespace-nowrap rounded-full bg-cream-soft px-3 py-1 text-xs font-bold text-navy">
+					<span
+						class="shrink-0 rounded-full bg-cream-soft px-3 py-1 text-xs font-bold whitespace-nowrap text-navy"
+					>
 						{SEGMENT_LABELS[prospect.segment as TalkTrackSegment]}
 					</span>
-					<span class="shrink-0 whitespace-nowrap rounded-full border border-cream-dim px-3 py-1 text-xs font-bold text-ink/70">
-						{prospect.segmentConfidence != null ? `${Math.round(prospect.segmentConfidence * 100)}% match` : '—'}
+					<span
+						class="shrink-0 rounded-full border border-cream-dim px-3 py-1 text-xs font-bold whitespace-nowrap text-ink/70"
+					>
+						{prospect.segmentConfidence != null
+							? `${Math.round(prospect.segmentConfidence * 100)}% match`
+							: '—'}
 					</span>
 				</div>
 			</div>
-			<span class="shrink-0 whitespace-nowrap rounded-full px-3 py-1 text-xs font-bold {statusChipClass(prospect.status)}">
+			<span
+				class="shrink-0 rounded-full px-3 py-1 text-xs font-bold whitespace-nowrap {statusChipClass(
+					prospect.status
+				)}"
+			>
 				{STATUS_LABELS[prospect.status]}
 			</span>
 		</div>
 		<hr class="mt-8 border-cream-dim" />
 		<div class="mt-6">
-				<button
-					onclick={generateDraft}
-					disabled={busy}
-					class="cursor-pointer rounded-md bg-linear-to-r from-coral to-amber px-3 py-2 text-xs font-bold tracking-wide text-white uppercase disabled:cursor-not-allowed disabled:opacity-50"
-				>
+			<button
+				onclick={generateDraft}
+				disabled={busy}
+				class="cursor-pointer rounded-md bg-linear-to-r from-coral to-amber px-3 py-2 text-xs font-bold tracking-wide text-white uppercase disabled:cursor-not-allowed disabled:opacity-50"
+			>
 				{busy ? 'Researching and drafting email…' : 'Research and Draft Email'}
 			</button>
 		</div>
@@ -323,11 +379,14 @@
 
 			<div class="overflow-hidden rounded-lg border border-cream-dim bg-white">
 				<div class="flex items-center gap-2 border-b border-cream-dim px-4 py-3 text-sm">
-					<span class="w-12 shrink-0 text-xs font-bold tracking-wide text-ink/60 uppercase">From</span>
+					<span class="w-12 shrink-0 text-xs font-bold tracking-wide text-ink/60 uppercase"
+						>From</span
+					>
 					<span class="text-ink/40">—</span>
 				</div>
 				<div class="flex items-center gap-2 border-b border-cream-dim px-4 py-3 text-sm">
-					<span class="w-12 shrink-0 text-xs font-bold tracking-wide text-ink/60 uppercase">To</span>
+					<span class="w-12 shrink-0 text-xs font-bold tracking-wide text-ink/60 uppercase">To</span
+					>
 					<span class="text-ink">{prospect.email ?? '—'}</span>
 				</div>
 				<div class="px-4 py-12 text-center text-sm text-ink/50">Email hasn't been drafted yet.</div>
@@ -338,24 +397,38 @@
 			<div>
 				<h1 class="text-2xl font-bold text-navy">{prospect.firstName} {prospect.lastName}</h1>
 				<p class="mt-2 text-sm text-ink/70">
-					{prospect.title ?? ''}{prospect.title && prospect.organization ? ', ' : ''}{prospect.organization ?? ''}
+					{prospect.title ?? ''}{prospect.title && prospect.organization
+						? ', '
+						: ''}{prospect.organization ?? ''}
 					{prospect.location ? ` · ${prospect.location}` : ''}
 				</p>
 				<div class="mt-3 flex items-center gap-2">
-					<span class="shrink-0 whitespace-nowrap rounded-full bg-cream-soft px-3 py-1 text-xs font-bold text-navy">
+					<span
+						class="shrink-0 rounded-full bg-cream-soft px-3 py-1 text-xs font-bold whitespace-nowrap text-navy"
+					>
 						{SEGMENT_LABELS[prospect.segment]}
 					</span>
-					<span class="shrink-0 whitespace-nowrap rounded-full border border-cream-dim px-3 py-1 text-xs font-bold text-ink/70">
-						{prospect.segmentConfidence != null ? `${Math.round(prospect.segmentConfidence * 100)}% match` : '—'}
+					<span
+						class="shrink-0 rounded-full border border-cream-dim px-3 py-1 text-xs font-bold whitespace-nowrap text-ink/70"
+					>
+						{prospect.segmentConfidence != null
+							? `${Math.round(prospect.segmentConfidence * 100)}% match`
+							: '—'}
 					</span>
 				</div>
 			</div>
-			<span class="shrink-0 whitespace-nowrap rounded-full px-3 py-1 text-xs font-bold {statusChipClass(prospect.status)}">
+			<span
+				class="shrink-0 rounded-full px-3 py-1 text-xs font-bold whitespace-nowrap {statusChipClass(
+					prospect.status
+				)}"
+			>
 				{STATUS_LABELS[prospect.status]}
 			</span>
 		</div>
 		<hr class="mt-8 border-cream-dim" />
-		<div class="mt-8 grid grid-cols-1 gap-6 {draft.researchSummary ? 'md:grid-cols-[280px_1fr]' : ''}">
+		<div
+			class="mt-8 grid grid-cols-1 gap-6 {draft.researchSummary ? 'md:grid-cols-[280px_1fr]' : ''}"
+		>
 			{#if draft.researchSummary}
 				<div class="rounded-lg border border-cream-dim bg-white p-5">
 					<h2 class="text-xs font-bold tracking-wide text-ink/60 uppercase">Research summary</h2>
@@ -370,7 +443,9 @@
 
 			<div class="overflow-hidden rounded-lg border border-cream-dim bg-white">
 				<div class="flex items-center gap-2 border-b border-cream-dim px-4 py-2 text-sm">
-					<span class="w-12 shrink-0 text-xs font-bold tracking-wide text-ink/60 uppercase">From</span>
+					<span class="w-12 shrink-0 text-xs font-bold tracking-wide text-ink/60 uppercase"
+						>From</span
+					>
 					{#if draft.approved}
 						<span class="text-ink">{FROM_NAME} &lt;{fromEmail}&gt;</span>
 					{:else}
@@ -382,7 +457,8 @@
 					{/if}
 				</div>
 				<div class="flex items-center gap-2 border-b border-cream-dim px-4 py-2 text-sm">
-					<span class="w-12 shrink-0 text-xs font-bold tracking-wide text-ink/60 uppercase">To</span>
+					<span class="w-12 shrink-0 text-xs font-bold tracking-wide text-ink/60 uppercase">To</span
+					>
 					<span class="text-ink">{prospect.email ?? '—'}</span>
 				</div>
 
@@ -393,8 +469,7 @@
 					/>
 					<textarea
 						bind:value={editBody}
-						class="field-sizing-content w-full resize-y px-4 py-3 text-sm text-ink"
-					></textarea>
+						class="field-sizing-content w-full resize-y px-4 py-3 text-sm text-ink"></textarea>
 					<div class="flex justify-end gap-2 border-t border-cream-dim px-4 py-3">
 						<button
 							onclick={() => (editing = false)}
@@ -412,7 +487,7 @@
 					</div>
 				{:else}
 					<div class="bg-cream-soft px-4 py-3 text-sm font-bold text-ink">{draft.subject}</div>
-					<div class="whitespace-pre-wrap px-4 py-4 text-sm text-ink">{draft.body}</div>
+					<div class="px-4 py-4 text-sm whitespace-pre-wrap text-ink">{draft.body}</div>
 				{/if}
 			</div>
 		</div>
@@ -423,7 +498,9 @@
 					? 'bg-sky text-periwinkle-dark'
 					: 'bg-amber/20 text-amber'}"
 			>
-				{pushResult.status === 'send-confirmed' ? 'Sent - confirmed.' : (pushResult.message ?? 'Pushed, send unconfirmed - check Klaviyo.')}
+				{pushResult.status === 'send-confirmed'
+					? 'Sent - confirmed.'
+					: (pushResult.message ?? 'Pushed, send unconfirmed - check Klaviyo.')}
 			</div>
 		{/if}
 
