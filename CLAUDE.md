@@ -6,6 +6,9 @@ SvelteKit + Tailwind v4 project for fundamental.health.
 
 See [docs/](docs/) for project documentation:
 
+- [docs/SOP.md](docs/SOP.md) — handoff guide: how staff use the tool, and
+  what an incoming engineer needs to know (stack, env vars, deployment
+  status, known gaps, open-issue snapshot).
 - [docs/design.md](docs/design.md) — color palette / brand tokens.
 - [docs/CONTEXT.md](docs/CONTEXT.md) — domain vocabulary for the AI Donor
   Outreach Agent and adjacent supporter-outreach work.
