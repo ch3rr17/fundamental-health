@@ -104,6 +104,9 @@
 
 	let city = $state(CITIES[0]);
 	const added = new SvelteSet<string>();
+	const adding = new SvelteSet<string>();
+	let addError = $state('');
+	let apolloLabelId = $state<string | null>(null);
 	const segmentFilter = new SvelteSet<TalkTrackSegment>();
 	let segmentPanelOpen = $state(false);
 	let segmentWrapperEl = $state<HTMLElement | undefined>();
@@ -149,6 +152,37 @@
 		// Demo mode: always show the full card set no matter what was searched.
 		results = DEMO_RESULTS;
 		searching = false;
+	}
+
+	async function addToProspects(person: BoardProspect) {
+		if (adding.has(person.id) || added.has(person.id)) return;
+		adding.add(person.id);
+		addError = '';
+		try {
+			const res = await fetch('/api/discover/add', {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({
+					firstName: person.name.split(' ')[0],
+					lastName: person.name.split(' ').slice(1).join(' '),
+					title: person.role,
+					organization: person.org(searchedCity),
+					segment: person.segment,
+					apolloLabelId
+				})
+			});
+			const data = await res.json();
+			if (!res.ok) {
+				addError = data.error ?? 'Failed to add prospect';
+			} else {
+				added.add(person.id);
+				if (data.apolloLabelId) apolloLabelId = data.apolloLabelId;
+			}
+		} catch {
+			addError = 'Failed to add prospect — check your connection.';
+		} finally {
+			adding.delete(person.id);
+		}
 	}
 
 	function matchClass(match: number) {
@@ -256,6 +290,9 @@
 			in <span class="font-bold text-ink">{searchedCity}</span>
 			{#if searchedSegmentLabel}for <span class="font-bold text-ink">{searchedSegmentLabel}</span>{/if}
 		</p>
+		{#if addError}
+			<p class="mt-2 text-sm font-bold text-coral">{addError}</p>
+		{/if}
 		<div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 			{#each results as person (person.id)}
 				<div class="flex flex-col rounded-lg border border-cream-dim bg-white p-5">
@@ -290,10 +327,11 @@
 							</span>
 						{:else}
 							<button
-								onclick={() => added.add(person.id)}
-								class="cursor-pointer rounded-md border border-coral px-3 py-1.5 text-xs font-bold tracking-wide text-coral uppercase transition-colors duration-300 ease-in-out hover:bg-coral hover:text-white"
+								onclick={() => addToProspects(person)}
+								disabled={adding.has(person.id)}
+								class="cursor-pointer rounded-md border border-coral px-3 py-1.5 text-xs font-bold tracking-wide text-coral uppercase transition-colors duration-300 ease-in-out hover:bg-coral hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
 							>
-								Add to Prospects
+								{adding.has(person.id) ? 'Adding…' : 'Add to Prospects'}
 							</button>
 						{/if}
 					</div>
