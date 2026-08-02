@@ -28,7 +28,7 @@ STRICT RULES — follow these exactly:
 - Use the talk-track framing and CTA provided, adapted naturally to the prospect.
 - Do NOT mention that you are an AI or that this was auto-generated.
 - Sign off as the Development Associate at FundaMental Health (leave the name as [Your Name] for the intern to fill in).
-- NEVER use en dashes (–) or em dashes (—). Rewrite with a comma, period, or a plain hyphen instead.
+- NEVER use en dashes (–) or em dashes (—), and never substitute a hyphen set off with spaces ("word - word") in their place either. Rewrite with a comma or period instead.
 - Avoid stock AI-sounding phrasing ("I hope this finds you well," "I wanted to reach out," neatly parallel three-part sentences). Vary sentence length and keep the voice plainspoken, the way a real development associate would actually write.
 
 OUTPUT FORMAT — return valid JSON only, no markdown fencing:
@@ -44,14 +44,18 @@ OUTPUT FORMAT — return valid JSON only, no markdown fencing:
 export function stripDashes(input: string): string {
 	let text = input;
 
-	// Digit ranges ("2020–2026", "10 – 15") read fine as a plain hyphen with no spaces.
-	text = text.replace(/(\d)\s*[–—]\s*(\d)/g, '$1-$2');
+	// Digit ranges ("2020–2026", "10 - 15") read fine as a plain hyphen with no spaces,
+	// whichever dash character the source used.
+	text = text.replace(/(\d)\s*[-–—]\s*(\d)/g, '$1-$2');
 
 	// Everywhere else, a dash is standing in for a comma — setting off a clause, an
-	// aside, or an appositive. That holds whether the source spaced it ("word — word")
-	// or not ("word—word"); both read the same. A comma is grammatically safe in every
-	// one of those cases, unlike a period, which can turn a noun phrase into a fragment.
+	// aside, or an appositive. That holds for en/em dashes, spaced or not ("word — word"
+	// and "word—word" mean the same thing), and for a plain hyphen used the same way
+	// ("word - word") — a common workaround when told not to use a real dash character.
+	// A comma is grammatically safe in every one of those cases, unlike a period, which
+	// can turn a noun phrase into a fragment.
 	text = text.replace(/\s*[–—]\s*/g, ', ');
+	text = text.replace(/ - /g, ', ');
 
 	return text;
 }

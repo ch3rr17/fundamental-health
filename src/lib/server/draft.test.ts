@@ -204,4 +204,22 @@ describe('stripDashes', () => {
 	it('handles multiple unspaced dashes in one string', () => {
 		expect(stripDashes('one—two—done')).toBe('one, two, done');
 	});
+
+	it('replaces a spaced plain hyphen used as a dash substitute', () => {
+		// Regression: the model sometimes dodges the "no em/en dash" rule by using a
+		// plain hyphen with spaces around it instead ("word - word"). Same fix applies.
+		expect(stripDashes('The early data surprised us - we saw higher engagement.')).toBe(
+			'The early data surprised us, we saw higher engagement.'
+		);
+	});
+
+	it('leaves a real hyphenated compound word alone', () => {
+		expect(stripDashes('a mission-driven, peer-to-peer conversation')).toBe(
+			'a mission-driven, peer-to-peer conversation'
+		);
+	});
+
+	it('collapses a digit range written with a plain hyphen too', () => {
+		expect(stripDashes('Served 10 - 15 families.')).toBe('Served 10-15 families.');
+	});
 });
