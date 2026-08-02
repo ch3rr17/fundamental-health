@@ -111,7 +111,7 @@
 </script>
 
 <div class="mx-auto max-w-xl px-6 py-16">
-	<a href={resolve('/queue')} class="text-xs font-bold text-periwinkle-dark">← Back to Prospects</a>
+	<a href={resolve('/prospects')} class="text-xs font-bold text-periwinkle-dark">← Back to Prospects</a>
 
 	<h1 class="mt-3 text-2xl font-bold text-navy">Import Prospects</h1>
 	<p class="mt-2 text-sm text-ink">
@@ -135,7 +135,7 @@
 				? 'border-coral text-coral'
 				: 'border-cream-dim text-ink/60'}"
 		>
-			CSV upload
+			CSV Upload
 		</button>
 	</div>
 
@@ -173,14 +173,6 @@
 				{/if}
 			{/if}
 		{:else}
-			<p class="mb-4 text-left text-xs text-ink/60">
-				Required: <code class="rounded bg-cream-soft px-1 py-0.5">first_name, last_name</code>.
-				Optional: <code class="rounded bg-cream-soft px-1 py-0.5">email, organization, title,
-				linkedin_url, location</code> (Apollo's own column names, like
-				<code class="rounded bg-cream-soft px-1 py-0.5">company_name</code> and
-				<code class="rounded bg-cream-soft px-1 py-0.5">person_linkedin_url</code>, are mapped
-				automatically).
-			</p>
 			<input
 				type="file"
 				accept=".csv,text/csv"
@@ -207,7 +199,7 @@
 
 		{#if result}
 			<a
-				href={resolve('/queue')}
+				href={resolve('/prospects')}
 				class="mt-6 inline-block rounded-md border border-coral px-4 py-3 text-sm font-bold tracking-wide text-coral uppercase hover:bg-coral hover:text-white"
 			>
 				Go to Prospects
