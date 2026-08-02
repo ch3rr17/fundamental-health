@@ -118,6 +118,7 @@
 	let addError = $state('');
 	let addedMessage = $state('');
 	let apolloLabelId = $state<string | null>(null);
+	let apolloLabelName = $state<string | null>(null);
 	const segmentFilter = new SvelteSet<TalkTrackSegment>();
 	let segmentPanelOpen = $state(false);
 	let segmentWrapperEl = $state<HTMLElement | undefined>();
@@ -194,13 +195,15 @@
 						title: person.role,
 						organization: person.org(searchedCity),
 						segment: person.segment,
-						apolloLabelId
+						apolloLabelId,
+						apolloLabelName
 					})
 				});
 				const data = await res.json();
 				if (res.ok) {
 					added.add(person.id);
 					if (data.apolloLabelId) apolloLabelId = data.apolloLabelId;
+					if (data.apolloLabelName) apolloLabelName = data.apolloLabelName;
 					count++;
 				} else {
 					addError = data.error ?? 'Failed to add prospect';

@@ -17,7 +17,7 @@ export const POST: RequestHandler = async (event) => {
 	if (denied) return denied;
 
 	const body = await event.request.json();
-	const { firstName, lastName, email, title, organization, linkedinUrl, location, segment, apolloLabelId } = body;
+	const { firstName, lastName, email, title, organization, linkedinUrl, location, segment, apolloLabelId, apolloLabelName } = body;
 
 	if (!firstName || !lastName) {
 		return json({ error: 'firstName and lastName are required' }, { status: 400 });
@@ -25,7 +25,7 @@ export const POST: RequestHandler = async (event) => {
 
 	// Create or reuse an Apollo label
 	let labelId = apolloLabelId;
-	let labelName: string | null = null;
+	let labelName: string | null = apolloLabelName || null;
 	if (!labelId) {
 		const now = new Date();
 		const mm = String(now.getMonth() + 1).padStart(2, '0');
