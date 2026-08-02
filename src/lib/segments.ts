@@ -22,8 +22,8 @@ export const STATUS_LABELS: Record<ProspectStatus, string> = {
 	'needs-review': 'Needs review',
 	'draft-ready': 'Email drafted',
 	approved: 'Approved — ready to push',
-	pushed: 'Pushed — unconfirmed',
-	'send-confirmed': 'Send confirmed',
+	pushed: 'Sent to Klaviyo',
+	'send-confirmed': 'Email sent',
 	logged: 'Synced to Monday.com'
 };
 
