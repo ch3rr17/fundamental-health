@@ -15,6 +15,7 @@
 		return 'bg-cream-dim text-ink/70';
 	}
 
+	const FROM_NAME = 'FundaMental Health';
 	const FROM_OPTIONS = [
 		'hello@fundamental.health',
 		'development@fundamental.health',
@@ -310,7 +311,7 @@
 					disabled={busy}
 					class="cursor-pointer rounded-md bg-linear-to-r from-coral to-amber px-3 py-2 text-xs font-bold tracking-wide text-white uppercase disabled:cursor-not-allowed disabled:opacity-50"
 				>
-				{busy ? 'Researching…' : 'Research and Draft Email'}
+				{busy ? 'Researching and drafting email…' : 'Research and Draft Email'}
 			</button>
 		</div>
 
@@ -371,11 +372,11 @@
 				<div class="flex items-center gap-2 border-b border-cream-dim px-4 py-2 text-sm">
 					<span class="w-12 shrink-0 text-xs font-bold tracking-wide text-ink/60 uppercase">From</span>
 					{#if draft.approved}
-						<span class="text-ink">{fromEmail}</span>
+						<span class="text-ink">{FROM_NAME} &lt;{fromEmail}&gt;</span>
 					{:else}
 						<select bind:value={fromEmail} class="flex-1 bg-transparent text-sm font-bold text-ink">
 							{#each FROM_OPTIONS as opt (opt)}
-								<option value={opt}>{opt}</option>
+								<option value={opt}>{FROM_NAME} &lt;{opt}&gt;</option>
 							{/each}
 						</select>
 					{/if}
