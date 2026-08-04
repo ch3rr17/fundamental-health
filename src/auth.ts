@@ -27,6 +27,7 @@ const ALLOWED_EMAILS = new Set(
 );
 
 export const { handle, signIn, signOut } = SvelteKitAuth({
+	trustHost: true,
 	providers: [Google],
 	pages: {
 		error: '/error'
